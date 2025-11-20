@@ -1,7 +1,6 @@
 # BrandPixy
 
-BrandPixy is an interactive brand identity generator powered by AI (Gemini) and SvelteKit.
-
+BrandPixy is an interactive brand identity generator powered by AI.
 ## Features
 - **Interactive 3-Phase Flow**: Industry, Vibe, Values.
 - **AI-Powered Generation**: Uses Google Gemini API to generate unique names and taglines.
