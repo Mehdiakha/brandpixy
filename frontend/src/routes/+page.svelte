@@ -474,20 +474,21 @@
 		position: absolute;
 		width: 160px;
 		height: 160px;
-		background: rgba(255, 255, 255, 0.9);
-		border: 2px solid rgba(255, 255, 255, 0.5);
+		background: rgba(255, 255, 255, 0.95);
+		border: 1px solid rgba(255, 255, 255, 0.2);
 		border-radius: 1rem;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		box-shadow: 0 0 20px rgba(0,0,0,0.1);
 		backface-visibility: hidden;
+		overflow: hidden;
 	}
 
 	.face img {
-		width: 90%;
-		height: 90%;
-		border-radius: 0.8rem;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
 	}
 
 	.front  { transform: rotateY(0deg) translateZ(80px); }
