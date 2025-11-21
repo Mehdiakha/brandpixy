@@ -107,7 +107,7 @@ async def generate_logo_image(name: str, vibe: str) -> str:
         return ""
 
 
-def local_generate(request: BrandRequest, count: int = 24):
+def local_generate(request: BrandRequest, count: int = 20):
     industry = (request.industry or '').strip()
     vibe = (request.vibe or '').strip()
     values = (request.values or '').strip()
@@ -184,14 +184,14 @@ async def generate(request: BrandRequest):
                     svg = generate_svg(name, i)
                     suggestions.append({"name": name, "tagline": tagline, "svg": svg})
             
-            # Fill with local if OpenAI returned fewer than 24
-            if len(suggestions) < 24:
-                print(f"Filling remaining {24 - len(suggestions)} slots with local generation.")
-                remaining = 24 - len(suggestions)
+            # Fill with local if OpenAI returned fewer than 20
+            if len(suggestions) < 20:
+                print(f"Filling remaining {20 - len(suggestions)} slots with local generation.")
+                remaining = 20 - len(suggestions)
                 suggestions.extend(local_generate(request, count=remaining))
         else:
             print("No OpenAI API Key found. Using local generation.")
-            suggestions = local_generate(request, count=24)
+            suggestions = local_generate(request, count=20)
 
         print(f"Returning {len(suggestions)} suggestions.")
         return {"suggestions": suggestions}

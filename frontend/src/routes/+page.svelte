@@ -93,6 +93,11 @@
 			console.log("Received data:", data);
 			suggestions = data.suggestions || [];
 			step = 4; // Move to results
+
+			// Automatically generate HQ logos for all suggestions
+			// We do this in batches to avoid overwhelming the browser/server
+			generateAllLogos();
+
 		} catch (e) {
 			console.error("Generation failed:", e);
 			alert(`Error: ${e.message}. Check console for details.`);
@@ -101,8 +106,26 @@
 		}
 	}
 
+	async function generateAllLogos() {
+		// Process in chunks of 3 to be polite to the API/Network
+		const chunk = 3;
+		for (let i = 0; i < suggestions.length; i += chunk) {
+			const batch = suggestions.slice(i, i + chunk).map((s, idx) => {
+				// Calculate actual index in the main array
+				const realIndex = i + idx;
+				return generateHQLogo(realIndex, s.name);
+			});
+			await Promise.all(batch);
+		}
+	}
+
 	async function generateHQLogo(index, name) {
-		generatingLogoFor = index;
+		// If already generated or generating, skip
+		if (suggestions[index].logoUrl || suggestions[index].generating) return;
+
+		suggestions[index].generating = true;
+		suggestions = [...suggestions]; // Trigger reactivity
+
 		try {
 			const res = await fetch(`/api/generate-logo?name=${encodeURIComponent(name)}&vibe=${encodeURIComponent(vibe)}`, {
 				method: 'POST'
@@ -110,13 +133,12 @@
 			const data = await res.json();
 			if (data.url) {
 				suggestions[index].logoUrl = data.url;
-				suggestions = [...suggestions];
 			}
 		} catch (e) {
-			console.error(e);
-			alert("Failed to generate HQ logo. Please try again.");
+			console.error(`Failed to generate logo for ${name}:`, e);
 		} finally {
-			generatingLogoFor = null;
+			suggestions[index].generating = false;
+			suggestions = [...suggestions]; // Trigger reactivity
 		}
 	}
 
@@ -205,11 +227,10 @@
 				Brand<span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">Pixy</span>
 			</h1>
 			<p class="text-xl md:text-2xl text-slate-600 max-w-2xl mx-auto mb-12 leading-relaxed font-light">
-				Craft your entire brand identity in seconds. <br>
-				<span class="font-medium text-slate-800">Names. Taglines. Logos.</span>
+				Craft your entire brand identity in seconds.
 			</p>
 			<button 
-				class="group relative px-8 py-4 bg-slate-900 text-white text-lg font-bold rounded-full shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 overflow-hidden"
+				class="group relative px-8 py-4 bg-slate-900 text-white text-lg font-bold rounded-full shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 overflow-hidden cursor-pointer"
 				on:click={() => showApp = true}
 			>
 				<span class="relative z-10 flex items-center gap-2">
@@ -416,7 +437,7 @@
 							<p class="text-slate-500">Generated for <span class="font-medium text-indigo-600">{industry}</span> • {vibe} Vibe</p>
 						</div>
 						<button 
-							class="px-6 py-2 bg-white border border-slate-200 text-slate-600 font-medium rounded-xl hover:bg-slate-50 transition-colors"
+							class="px-6 py-2 bg-white border border-slate-200 text-slate-600 font-medium rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
 							on:click={() => { step = 1; suggestions = []; }}
 						>
 							Start Over
@@ -448,31 +469,34 @@
 									</div>
 
 									<!-- Actions -->
-									<div class="p-4 border-t border-slate-100 bg-slate-50/80 grid grid-cols-2 gap-3">
+									<div class="p-4 border-t border-slate-100 bg-slate-50/80 grid grid-cols-1 gap-3">
 										<button 
-											class="py-2.5 px-4 bg-white border border-slate-200 text-slate-700 font-semibold rounded-xl text-sm hover:bg-slate-50 hover:text-indigo-600 hover:border-indigo-200 transition-all flex items-center justify-center gap-2 shadow-sm"
+											class="py-2.5 px-4 bg-white border border-slate-200 text-slate-700 font-semibold rounded-xl text-sm hover:bg-slate-50 hover:text-indigo-600 hover:border-indigo-200 transition-all flex items-center justify-center gap-2 shadow-sm cursor-pointer"
 											on:click={() => downloadLogo(s)}
 										>
 											<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-											Download
+											Download Logo
 										</button>
-										<button 
-											class="py-2.5 px-4 bg-indigo-600 text-white font-semibold rounded-xl text-sm hover:bg-indigo-700 shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
-											on:click={() => generateHQLogo(i, s.name)}
-											disabled={generatingLogoFor === i || s.logoUrl}
-										>
-											{#if generatingLogoFor === i}
-												<svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-											{:else if s.logoUrl}
-												<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-											{:else}
-												<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-											{/if}
-											{s.logoUrl ? 'Done' : 'AI Logo'}
-										</button>
+										{#if s.generating}
+											<div class="text-xs text-center text-indigo-600 font-medium animate-pulse">
+												Generating AI Logo...
+											</div>
+										{/if}
 									</div>
 								</div>
 							{/each}
+
+							<!-- Unlock Full Brand Identity Card -->
+							<div class="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-2xl shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 overflow-hidden group flex flex-col items-center justify-center text-center p-8 text-white" in:fade={{ delay: suggestions.length * 50, duration: 300 }}>
+								<div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mb-6 backdrop-blur-sm group-hover:scale-110 transition-transform">
+									<svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+								</div>
+								<h3 class="text-2xl font-bold mb-2">Unlock Full Brand</h3>
+								<p class="text-indigo-100 mb-6 text-sm">Get social media kits, business cards, and brand guidelines.</p>
+								<button class="px-6 py-3 bg-white text-indigo-600 font-bold rounded-xl hover:bg-indigo-50 transition-colors w-full cursor-pointer">
+									Unlock Now
+								</button>
+							</div>
 						</div>
 					{/if}
 				</div>
