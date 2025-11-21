@@ -13,6 +13,7 @@
 	let showApp = false;
 	let generatingLogoFor = null;
 	let showUnlockModal = false;
+	let isMenuOpen = false;
 
 	const vibes = [
 		{ id: 'Modern', emoji: '🚀', desc: 'Clean, sleek, and forward-thinking' },
@@ -213,27 +214,62 @@
 
 		<!-- Landing Navbar -->
 		<div class="fixed top-6 left-0 right-0 z-50 flex justify-center px-4">
-			<nav class="bg-white/10 backdrop-blur-md border border-white/20 shadow-lg rounded-full px-4 py-2 md:px-6 md:py-3 flex items-center justify-between gap-4 md:gap-8 max-w-5xl w-full transition-all duration-300 hover:bg-white/20">
+			<nav class="bg-white/10 backdrop-blur-md border border-white/20 shadow-lg rounded-full px-4 py-2 md:px-6 md:py-3 flex items-center justify-between gap-4 md:gap-8 max-w-5xl w-full transition-all duration-300 hover:bg-white/20 relative z-50">
 				<div class="flex items-center gap-3 cursor-pointer" on:click={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-					<img src="/logo.jpg" alt="BrandPixy" class="h-10 w-auto object-contain mix-blend-multiply" />
-					<span class="text-lg font-bold text-slate-900 tracking-tight hidden sm:block">BrandPixy</span>
+					<span class="text-lg font-bold text-slate-900 tracking-tight">BrandPixy</span>
 				</div>
+				
+				<!-- Desktop Menu -->
 				<div class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600">
 					<a href="#features" class="hover:text-indigo-600 transition-colors">Features</a>
 					<a href="#" class="hover:text-indigo-600 transition-colors">Pricing</a>
 					<a href="#" class="hover:text-indigo-600 transition-colors">About</a>
 				</div>
-				<button 
-					class="px-5 py-2 bg-slate-900 text-white text-sm font-bold rounded-full hover:bg-slate-800 transition-colors shadow-md whitespace-nowrap"
-					on:click={() => showApp = true}
-				>
-					Get Started
-				</button>
+
+				<div class="flex items-center gap-4">
+					<button 
+						class="hidden md:block px-5 py-2 bg-slate-900 text-white text-sm font-bold rounded-full hover:bg-slate-800 transition-colors shadow-md whitespace-nowrap"
+						on:click={() => showApp = true}
+					>
+						Get Started
+					</button>
+
+					<!-- Mobile Hamburger -->
+					<button 
+						class="md:hidden p-2 text-slate-800 hover:bg-white/20 rounded-full transition-colors"
+						on:click={() => isMenuOpen = !isMenuOpen}
+					>
+						<div class="w-6 h-5 relative flex flex-col justify-between">
+							<span class="w-full h-0.5 bg-current rounded-full transition-all duration-300 {isMenuOpen ? 'rotate-45 translate-y-2' : ''}"></span>
+							<span class="w-full h-0.5 bg-current rounded-full transition-all duration-300 {isMenuOpen ? 'opacity-0' : ''}"></span>
+							<span class="w-full h-0.5 bg-current rounded-full transition-all duration-300 {isMenuOpen ? '-rotate-45 -translate-y-2.5' : ''}"></span>
+						</div>
+					</button>
+				</div>
 			</nav>
+
+			<!-- Mobile Menu Overlay -->
+			{#if isMenuOpen}
+				<div 
+					class="absolute top-full left-4 right-4 mt-2 p-4 bg-white/80 backdrop-blur-xl border border-white/20 rounded-3xl shadow-xl flex flex-col gap-4 md:hidden origin-top z-40"
+					in:slide={{ duration: 300, axis: 'y' }}
+					out:slide={{ duration: 200, axis: 'y' }}
+				>
+					<a href="#features" class="p-3 text-slate-700 font-medium hover:bg-white/50 rounded-xl transition-colors" on:click={() => isMenuOpen = false}>Features</a>
+					<a href="#" class="p-3 text-slate-700 font-medium hover:bg-white/50 rounded-xl transition-colors" on:click={() => isMenuOpen = false}>Pricing</a>
+					<a href="#" class="p-3 text-slate-700 font-medium hover:bg-white/50 rounded-xl transition-colors" on:click={() => isMenuOpen = false}>About</a>
+					<button 
+						class="w-full py-3 bg-slate-900 text-white font-bold rounded-xl shadow-md"
+						on:click={() => { isMenuOpen = false; showApp = true; }}
+					>
+						Get Started
+					</button>
+				</div>
+			{/if}
 		</div>
 
 		<!-- Hero Section -->
-		<div class="flex-1 flex flex-col items-center justify-center p-6 text-center landing-content relative z-10 mt-20">
+		<div class="flex-1 flex flex-col items-center justify-center p-6 text-center landing-content relative z-10 mt-32">
 			<div class="mb-16 flex justify-center perspective-container cube-container">
 				<div class="cube">
 					<div class="face front">
@@ -318,8 +354,7 @@
 		<div class="fixed top-6 left-0 right-0 z-50 flex justify-center px-4">
 			<header class="bg-white/70 backdrop-blur-xl border border-white/20 shadow-lg rounded-full px-4 py-2 md:px-6 md:py-3 flex items-center justify-between gap-4 md:gap-8 max-w-2xl w-full transition-all duration-300 hover:shadow-xl hover:bg-white/80">
 				<div class="flex items-center gap-3 cursor-pointer group" on:click={() => { showApp = false; suggestions = []; industry = ''; step = 1; }}>
-					<img src="/logo.jpg" alt="BrandPixy" class="h-10 w-auto object-contain mix-blend-multiply group-hover:scale-105 transition-transform" />
-					<span class="text-lg font-bold text-slate-900 tracking-tight hidden sm:block">BrandPixy</span>
+					<span class="text-lg font-bold text-slate-900 tracking-tight">BrandPixy</span>
 				</div>
 				
 				{#if step < 4}
