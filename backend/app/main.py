@@ -38,7 +38,7 @@ async def generate_brand_names(industry: str, vibe: str, values: str) -> list[di
     Generates creative brand names and taglines using OpenAI GPT-4o.
     """
     if not client:
-        # Fallback if no key
+        print("OpenAI Client not initialized. Skipping AI generation.")
         return []
 
     prompt = f"""
@@ -51,6 +51,7 @@ async def generate_brand_names(industry: str, vibe: str, values: str) -> list[di
     """
     
     try:
+        print(f"Sending request to OpenAI for industry: {industry}")
         response = await client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
@@ -61,6 +62,7 @@ async def generate_brand_names(industry: str, vibe: str, values: str) -> list[di
             temperature=0.8,
         )
         content = response.choices[0].message.content
+        print("Received response from OpenAI")
         data = json.loads(content)
         
         items = data.get('brands', [])

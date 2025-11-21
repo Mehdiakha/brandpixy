@@ -35,21 +35,25 @@
 		const tl = gsap.timeline();
 		tl.from('.landing-content', { y: 50, opacity: 0, duration: 1, ease: 'power3.out' });
 		
-		// Logo animation: Drop and spin
-		gsap.fromTo('.hero-logo', 
-			{ y: -100, opacity: 0, rotation: -180 },
-			{ y: 0, opacity: 1, rotation: 0, duration: 1.5, ease: 'bounce.out', delay: 0.5 }
-		);
+		// Cube animation
+		gsap.to('.cube', {
+			rotationX: 360,
+			rotationY: 360,
+			duration: 20,
+			repeat: -1,
+			ease: 'none'
+		});
 
-		// Scroll animation for logo to spin when scrolling to features
-		gsap.to('.hero-logo', {
+		// Scroll animation for cube to spin faster when scrolling to features
+		gsap.to('.cube', {
 			scrollTrigger: {
 				trigger: '#features',
 				start: 'top bottom',
 				end: 'center center',
 				scrub: 1
 			},
-			rotation: 360,
+			rotationX: 720,
+			rotationY: 720,
 			scale: 1.2
 		});
 	}
@@ -72,11 +76,17 @@
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ industry, vibe, values })
 			});
+			
+			if (!res.ok) {
+				throw new Error(`API Error: ${res.status}`);
+			}
+
 			const data = await res.json();
 			suggestions = data.suggestions || [];
 			step = 4; // Move to results
 		} catch (e) {
-			console.error(e);
+			console.error("Generation failed:", e);
+			alert("Something went wrong while generating. Please try again.");
 		} finally {
 			loading = false;
 		}
@@ -145,8 +155,23 @@
 
 		<!-- Hero Section -->
 		<div class="flex-1 flex flex-col items-center justify-center p-6 text-center landing-content relative z-10">
-			<div class="mb-8 flex justify-center">
-				<img src="/logo.jpg" alt="BrandPixy Logo" class="hero-logo w-32 h-32 rounded-3xl shadow-2xl" />
+			<div class="mb-12 flex justify-center perspective-container">
+				<div class="cube">
+					<div class="face front">
+						<img src="/logo.jpg" alt="BrandPixy Logo" class="w-full h-full object-cover rounded-xl" />
+					</div>
+					<div class="face back">
+						<img src="/logo.jpg" alt="BrandPixy Logo" class="w-full h-full object-cover rounded-xl" />
+					</div>
+					<div class="face right">
+						<img src="/logo.jpg" alt="BrandPixy Logo" class="w-full h-full object-cover rounded-xl" />
+					</div>
+					<div class="face left">
+						<img src="/logo.jpg" alt="BrandPixy Logo" class="w-full h-full object-cover rounded-xl" />
+					</div>
+					<div class="face top"></div>
+					<div class="face bottom"></div>
+				</div>
 			</div>
 			<h1 class="text-6xl md:text-8xl font-black text-slate-900 mb-8 tracking-tight leading-tight">
 				Brand<span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">Pixy</span>
@@ -422,4 +447,46 @@
 	.animation-delay-4000 {
 		animation-delay: 4s;
 	}
+
+	/* Cube Animation Styles */
+	.perspective-container {
+		perspective: 1000px;
+		width: 160px;
+		height: 160px;
+	}
+
+	.cube {
+		width: 100%;
+		height: 100%;
+		position: relative;
+		transform-style: preserve-3d;
+		transform: rotateX(-30deg) rotateY(-45deg);
+	}
+
+	.face {
+		position: absolute;
+		width: 160px;
+		height: 160px;
+		background: rgba(255, 255, 255, 0.9);
+		border: 2px solid rgba(255, 255, 255, 0.5);
+		border-radius: 1rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		box-shadow: 0 0 20px rgba(0,0,0,0.1);
+		backface-visibility: hidden;
+	}
+
+	.face img {
+		width: 90%;
+		height: 90%;
+		border-radius: 0.8rem;
+	}
+
+	.front  { transform: rotateY(0deg) translateZ(80px); }
+	.back   { transform: rotateY(180deg) translateZ(80px); }
+	.right  { transform: rotateY(90deg) translateZ(80px); }
+	.left   { transform: rotateY(-90deg) translateZ(80px); }
+	.top    { transform: rotateX(90deg) translateZ(80px); background: #e0e7ff; }
+	.bottom { transform: rotateX(-90deg) translateZ(80px); background: #e0e7ff; }
 </style>
