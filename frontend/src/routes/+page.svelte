@@ -99,6 +99,25 @@
 		}
 	}
 
+	async function generateHQLogo(index, name) {
+		generatingLogoFor = index;
+		try {
+			const res = await fetch(`/api/generate-logo?name=${encodeURIComponent(name)}&vibe=${encodeURIComponent(vibe)}`, {
+				method: 'POST'
+			});
+			const data = await res.json();
+			if (data.url) {
+				suggestions[index].logoUrl = data.url;
+				suggestions = [...suggestions];
+			}
+		} catch (e) {
+			console.error(e);
+			alert("Failed to generate HQ logo. Please try again.");
+		} finally {
+			generatingLogoFor = null;
+		}
+	}
+
 	function downloadLogo(item) {
 		const name = item.name.replace(/\s+/g, '_').toLowerCase();
 		
@@ -419,13 +438,27 @@
 									</div>
 
 									<!-- Actions -->
-									<div class="p-4 border-t border-slate-100 bg-slate-50/80 grid grid-cols-1 gap-3">
+									<div class="p-4 border-t border-slate-100 bg-slate-50/80 grid grid-cols-2 gap-3">
 										<button 
-											class="py-3 px-4 bg-indigo-600 text-white font-semibold rounded-xl text-sm hover:bg-indigo-700 shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2"
+											class="py-2.5 px-4 bg-white border border-slate-200 text-slate-700 font-semibold rounded-xl text-sm hover:bg-slate-50 hover:text-indigo-600 hover:border-indigo-200 transition-all flex items-center justify-center gap-2 shadow-sm"
 											on:click={() => downloadLogo(s)}
 										>
 											<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-											Download Logo
+											Download
+										</button>
+										<button 
+											class="py-2.5 px-4 bg-indigo-600 text-white font-semibold rounded-xl text-sm hover:bg-indigo-700 shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+											on:click={() => generateHQLogo(i, s.name)}
+											disabled={generatingLogoFor === i || s.logoUrl}
+										>
+											{#if generatingLogoFor === i}
+												<svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+											{:else if s.logoUrl}
+												<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+											{:else}
+												<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+											{/if}
+											{s.logoUrl ? 'Done' : 'AI Logo'}
 										</button>
 									</div>
 								</div>
