@@ -11,13 +11,13 @@
 
 ---
 
-## ✨ Overview
+## Overview
 
 BrandPixy helps entrepreneurs, creators, and businesses build a brand identity in minutes using AI — from naming to visual concepts.
 
 ---
 
-## 🚀 Features
+## Features
 
 - **Interactive 3-Phase Flow**  
   Choose your Industry → Vibe → Core Values in a smooth guided experience.
@@ -33,8 +33,8 @@ BrandPixy helps entrepreneurs, creators, and businesses build a brand identity i
 
 ---
 
-## 🧰 Tech Stack
+## Tech Stack
 
-- **Frontend:** SvelteKit, Vite  
-- **Backend:** FastAPI, Python  
-- **AI Models:** Google Gemini, DALL-E  
+- **Frontend:** SvelteKit, Vite, TailwindCSS, Shadcn, PostCSS
+- **Backend:** FastAPI, Python, Requests
+- **AI Models:** Google Gemini, DALL-E, OpenAI
