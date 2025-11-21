@@ -12,6 +12,7 @@
 	let suggestions = [];
 	let showApp = false;
 	let generatingLogoFor = null;
+	let showUnlockModal = false;
 
 	const vibes = [
 		{ id: 'Modern', emoji: '🚀', desc: 'Clean, sleek, and forward-thinking' },
@@ -107,8 +108,8 @@
 	}
 
 	async function generateAllLogos() {
-		// Process in chunks of 3 to be polite to the API/Network
-		const chunk = 3;
+		// Process in chunks of 4 to ensure faster completion while respecting rate limits
+		const chunk = 4;
 		for (let i = 0; i < suggestions.length; i += chunk) {
 			const batch = suggestions.slice(i, i + chunk).map((s, idx) => {
 				// Calculate actual index in the main array
@@ -203,8 +204,29 @@
 		<div class="absolute top-20 right-20 w-72 h-72 bg-indigo-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-2000"></div>
 		<div class="absolute -bottom-8 left-1/2 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-4000"></div>
 
+		<!-- Landing Navbar -->
+		<div class="fixed top-6 left-0 right-0 z-50 flex justify-center px-4">
+			<nav class="bg-white/10 backdrop-blur-md border border-white/20 shadow-lg rounded-full px-6 py-3 flex items-center justify-between gap-8 max-w-5xl w-full transition-all duration-300 hover:bg-white/20">
+				<div class="flex items-center gap-3 cursor-pointer">
+					<img src="/logo.jpg" alt="BrandPixy" class="w-8 h-8 rounded-lg shadow-sm" />
+					<span class="text-lg font-bold text-slate-900 tracking-tight">BrandPixy</span>
+				</div>
+				<div class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600">
+					<a href="#features" class="hover:text-indigo-600 transition-colors">Features</a>
+					<a href="#" class="hover:text-indigo-600 transition-colors">Pricing</a>
+					<a href="#" class="hover:text-indigo-600 transition-colors">About</a>
+				</div>
+				<button 
+					class="px-5 py-2 bg-slate-900 text-white text-sm font-bold rounded-full hover:bg-slate-800 transition-colors shadow-md"
+					on:click={() => showApp = true}
+				>
+					Get Started
+				</button>
+			</nav>
+		</div>
+
 		<!-- Hero Section -->
-		<div class="flex-1 flex flex-col items-center justify-center p-6 text-center landing-content relative z-10">
+		<div class="flex-1 flex flex-col items-center justify-center p-6 text-center landing-content relative z-10 mt-20">
 			<div class="mb-16 flex justify-center perspective-container cube-container">
 				<div class="cube">
 					<div class="face front">
@@ -242,24 +264,24 @@
 		</div>
 
 		<!-- Features Section -->
-		<div id="features" class="py-20 bg-white/50 backdrop-blur-sm relative z-10">
+		<div id="features" class="py-24 bg-white/30 backdrop-blur-xl border-t border-white/20 relative z-10">
 			<div class="max-w-7xl mx-auto px-6">
 				<h2 class="text-4xl font-bold text-center text-slate-900 mb-16">Why BrandPixy?</h2>
-				<div class="grid md:grid-cols-3 gap-12">
-					<div class="text-center p-6 rounded-2xl bg-white shadow-lg hover:shadow-xl transition-all">
+				<div class="grid md:grid-cols-3 gap-8 md:gap-12">
+					<div class="text-center p-8 rounded-3xl bg-white/60 backdrop-blur-md border border-white/40 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all">
 						<div class="text-5xl mb-6">⚡</div>
-						<h3 class="text-xl font-bold mb-3">Instant Generation</h3>
-						<p class="text-slate-600">Get dozens of unique brand names and logos in seconds.</p>
+						<h3 class="text-xl font-bold mb-3 text-slate-900">Instant Generation</h3>
+						<p class="text-slate-600 leading-relaxed">Get dozens of unique brand names and logos in seconds.</p>
 					</div>
-					<div class="text-center p-6 rounded-2xl bg-white shadow-lg hover:shadow-xl transition-all">
+					<div class="text-center p-8 rounded-3xl bg-white/60 backdrop-blur-md border border-white/40 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all">
 						<div class="text-5xl mb-6">🎨</div>
-						<h3 class="text-xl font-bold mb-3">Tailored Vibes</h3>
-						<p class="text-slate-600">Choose from Modern, Luxury, Tech, and more styles.</p>
+						<h3 class="text-xl font-bold mb-3 text-slate-900">Tailored Vibes</h3>
+						<p class="text-slate-600 leading-relaxed">Choose from Modern, Luxury, Tech, and more styles.</p>
 					</div>
-					<div class="text-center p-6 rounded-2xl bg-white shadow-lg hover:shadow-xl transition-all">
+					<div class="text-center p-8 rounded-3xl bg-white/60 backdrop-blur-md border border-white/40 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all">
 						<div class="text-5xl mb-6">💎</div>
-						<h3 class="text-xl font-bold mb-3">Production Ready</h3>
-						<p class="text-slate-600">Download high-quality PNG logos instantly.</p>
+						<h3 class="text-xl font-bold mb-3 text-slate-900">Production Ready</h3>
+						<p class="text-slate-600 leading-relaxed">Download high-quality PNG logos instantly.</p>
 					</div>
 				</div>
 			</div>
@@ -487,13 +509,16 @@
 							{/each}
 
 							<!-- Unlock Full Brand Identity Card -->
-							<div class="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-2xl shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 overflow-hidden group flex flex-col items-center justify-center text-center p-8 text-white" in:fade={{ delay: suggestions.length * 50, duration: 300 }}>
-								<div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mb-6 backdrop-blur-sm group-hover:scale-110 transition-transform">
-									<svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+							<div class="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-2xl shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 overflow-hidden group flex flex-col items-center justify-center text-center p-6 text-white cursor-pointer" 
+								in:fade={{ delay: suggestions.length * 50, duration: 300 }}
+								on:click={() => showUnlockModal = true}
+							>
+								<div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mb-4 backdrop-blur-sm group-hover:scale-110 transition-transform">
+									<svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
 								</div>
-								<h3 class="text-2xl font-bold mb-2">Unlock Full Brand</h3>
-								<p class="text-indigo-100 mb-6 text-sm">Get social media kits, business cards, and brand guidelines.</p>
-								<button class="px-6 py-3 bg-white text-indigo-600 font-bold rounded-xl hover:bg-indigo-50 transition-colors w-full cursor-pointer">
+								<h3 class="text-xl font-bold mb-2">Unlock Full Brand</h3>
+								<p class="text-indigo-100 mb-4 text-xs">Get social media kits, business cards, and brand guidelines.</p>
+								<button class="px-4 py-2 bg-white text-indigo-600 text-sm font-bold rounded-lg hover:bg-indigo-50 transition-colors w-full">
 									Unlock Now
 								</button>
 							</div>
@@ -502,6 +527,65 @@
 				</div>
 			{/if}
 		</main>
+	</div>
+{/if}
+
+{#if showUnlockModal}
+	<div class="fixed inset-0 z-[100] flex items-center justify-center p-4" in:fade={{ duration: 200 }}>
+		<!-- Backdrop -->
+		<div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" on:click={() => showUnlockModal = false}></div>
+		
+		<!-- Modal Content -->
+		<div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg relative z-10 overflow-hidden" in:fly={{ y: 20, duration: 300 }}>
+			<div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-8 text-white text-center relative overflow-hidden">
+				<div class="absolute top-0 left-0 w-full h-full bg-[url('/grid.svg')] opacity-20"></div>
+				<button class="absolute top-4 right-4 text-white/70 hover:text-white transition-colors" on:click={() => showUnlockModal = false}>
+					<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+				</button>
+				<div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4 backdrop-blur-md">
+					<span class="text-3xl">💎</span>
+				</div>
+				<h2 class="text-3xl font-bold mb-2">Unlock Full Brand Kit</h2>
+				<p class="text-indigo-100">Take your brand to the next level.</p>
+			</div>
+			
+			<div class="p-8">
+				<div class="space-y-4 mb-8">
+					<div class="flex items-center gap-4 p-4 rounded-xl bg-slate-50 border border-slate-100">
+						<div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
+							<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+						</div>
+						<div>
+							<h4 class="font-bold text-slate-900">Social Media Kit</h4>
+							<p class="text-sm text-slate-500">Profile pics, covers, and post templates.</p>
+						</div>
+					</div>
+					<div class="flex items-center gap-4 p-4 rounded-xl bg-slate-50 border border-slate-100">
+						<div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-600">
+							<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0c0 .884-.896 1.75-2.167 2.5h4.333c-1.27-.75-2.167-1.616-2.167-2.5z"/></svg>
+						</div>
+						<div>
+							<h4 class="font-bold text-slate-900">Business Cards</h4>
+							<p class="text-sm text-slate-500">Print-ready designs for your team.</p>
+						</div>
+					</div>
+					<div class="flex items-center gap-4 p-4 rounded-xl bg-slate-50 border border-slate-100">
+						<div class="w-10 h-10 rounded-full bg-pink-100 flex items-center justify-center text-pink-600">
+							<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+						</div>
+						<div>
+							<h4 class="font-bold text-slate-900">Brand Guidelines</h4>
+							<p class="text-sm text-slate-500">Fonts, colors, and usage rules.</p>
+						</div>
+					</div>
+				</div>
+				
+				<button class="w-full py-4 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1">
+					Get Full Access - $29
+				</button>
+				<p class="text-center text-xs text-slate-400 mt-4">One-time payment. Lifetime access.</p>
+			</div>
+		</div>
 	</div>
 {/if}
 
