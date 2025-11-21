@@ -41,27 +41,23 @@
 			{ y: 0, opacity: 1, duration: 1.5, ease: 'bounce.out', delay: 0.5 }
 		);
 
-		// Continuous rotation
-		gsap.to('.cube', {
-			rotationX: 360,
-			rotationY: 360,
-			duration: 20,
-			repeat: -1,
-			ease: 'none'
-		});
+		// Interactive Mouse Movement
+		const handleMouseMove = (e) => {
+			const x = (e.clientX / window.innerWidth - 0.5) * 2;
+			const y = (e.clientY / window.innerHeight - 0.5) * 2;
 
-		// Scroll animation for cube to spin faster when scrolling to features
-		gsap.to('.cube', {
-			scrollTrigger: {
-				trigger: '#features',
-				start: 'top bottom',
-				end: 'center center',
-				scrub: 1
-			},
-			rotationX: 720,
-			rotationY: 720,
-			scale: 1.5
-		});
+			gsap.to('.cube', {
+				rotationY: x * 50 + 25, // Subtle rotation following mouse
+				rotationX: -y * 50 - 25,
+				duration: 1,
+				ease: 'power2.out'
+			});
+		};
+
+		window.addEventListener('mousemove', handleMouseMove);
+
+		// Cleanup function (though onMount runs once, good practice)
+		return () => window.removeEventListener('mousemove', handleMouseMove);
 	}
 
 	function nextStep() {
@@ -504,9 +500,9 @@
 
 	/* Cube Animation Styles */
 	.perspective-container {
-		perspective: 1200px;
-		width: 200px;
-		height: 200px;
+		perspective: 1000px;
+		width: 120px;
+		height: 120px;
 	}
 
 	.cube {
@@ -514,16 +510,16 @@
 		height: 100%;
 		position: relative;
 		transform-style: preserve-3d;
-		transform: rotateX(-30deg) rotateY(-45deg);
+		transform: rotateX(-25deg) rotateY(25deg);
 	}
 
 	.face {
 		position: absolute;
-		width: 200px;
-		height: 200px;
+		width: 120px;
+		height: 120px;
 		background: rgba(255, 255, 255, 0.95);
 		border: 1px solid rgba(255, 255, 255, 0.2);
-		border-radius: 1.5rem;
+		border-radius: 1rem;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -538,10 +534,10 @@
 		object-fit: cover;
 	}
 
-	.front  { transform: rotateY(0deg) translateZ(100px); }
-	.back   { transform: rotateY(180deg) translateZ(100px); }
-	.right  { transform: rotateY(90deg) translateZ(100px); }
-	.left   { transform: rotateY(-90deg) translateZ(100px); }
-	.top    { transform: rotateX(90deg) translateZ(100px); background: #e0e7ff; }
-	.bottom { transform: rotateX(-90deg) translateZ(100px); background: #e0e7ff; }
+	.front  { transform: rotateY(0deg) translateZ(60px); }
+	.back   { transform: rotateY(180deg) translateZ(60px); }
+	.right  { transform: rotateY(90deg) translateZ(60px); }
+	.left   { transform: rotateY(-90deg) translateZ(60px); }
+	.top    { transform: rotateX(90deg) translateZ(60px); background: #e0e7ff; }
+	.bottom { transform: rotateX(-90deg) translateZ(60px); background: #e0e7ff; }
 </style>

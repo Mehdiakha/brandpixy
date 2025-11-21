@@ -211,15 +211,17 @@ async def generate_logo_endpoint(name: str, vibe: str):
     try:
         if not API_KEY:
             print("No OpenAI API Key found for logo generation.")
-            raise HTTPException(status_code=500, detail="OpenAI API Key not configured")
+            raise HTTPException(status_code=500, detail="OpenAI API Key not configured on server. Please set OPENAI_API_KEY environment variable.")
 
         url = await generate_logo_image(name, vibe)
         if not url:
              print("OpenAI returned empty URL")
-             raise HTTPException(status_code=500, detail="Failed to generate image")
+             raise HTTPException(status_code=500, detail="OpenAI returned an empty image URL. Check API key quotas or permissions.")
              
         print(f"Generated logo URL: {url}")
         return {"url": url}
+    except HTTPException as he:
+        raise he
     except Exception as e:
         print(f"Error generating logo: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=f"Server Error: {str(e)}")
