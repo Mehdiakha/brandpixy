@@ -108,16 +108,23 @@
 	}
 
 	async function generateAllLogos() {
-		// Process in chunks of 4 to ensure faster completion while respecting rate limits
-		const chunk = 4;
-		for (let i = 0; i < suggestions.length; i += chunk) {
-			const batch = suggestions.slice(i, i + chunk).map((s, idx) => {
-				// Calculate actual index in the main array
-				const realIndex = i + idx;
-				return generateHQLogo(realIndex, s.name);
-			});
-			await Promise.all(batch);
-		}
+		// Use a concurrency pool to generate logos efficiently
+		// This prevents blocking the queue if one request is slow, and keeps 3 requests active at all times
+		const concurrency = 3;
+		const queue = suggestions.map((_, index) => index);
+
+		const worker = async () => {
+			while (queue.length > 0) {
+				const index = queue.shift();
+				if (index !== undefined) {
+					await generateHQLogo(index, suggestions[index].name);
+				}
+			}
+		};
+
+		// Start workers
+		const workers = Array(concurrency).fill(null).map(() => worker());
+		await Promise.all(workers);
 	}
 
 	async function generateHQLogo(index, name) {
@@ -206,10 +213,10 @@
 
 		<!-- Landing Navbar -->
 		<div class="fixed top-6 left-0 right-0 z-50 flex justify-center px-4">
-			<nav class="bg-white/10 backdrop-blur-md border border-white/20 shadow-lg rounded-full px-6 py-3 flex items-center justify-between gap-8 max-w-5xl w-full transition-all duration-300 hover:bg-white/20">
-				<div class="flex items-center gap-3 cursor-pointer">
-					<img src="/logo.jpg" alt="BrandPixy" class="w-8 h-8 rounded-lg shadow-sm" />
-					<span class="text-lg font-bold text-slate-900 tracking-tight">BrandPixy</span>
+			<nav class="bg-white/10 backdrop-blur-md border border-white/20 shadow-lg rounded-full px-4 py-2 md:px-6 md:py-3 flex items-center justify-between gap-4 md:gap-8 max-w-5xl w-full transition-all duration-300 hover:bg-white/20">
+				<div class="flex items-center gap-3 cursor-pointer" on:click={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+					<img src="/logo.jpg" alt="BrandPixy" class="h-10 w-auto object-contain mix-blend-multiply" />
+					<span class="text-lg font-bold text-slate-900 tracking-tight hidden sm:block">BrandPixy</span>
 				</div>
 				<div class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600">
 					<a href="#features" class="hover:text-indigo-600 transition-colors">Features</a>
@@ -217,7 +224,7 @@
 					<a href="#" class="hover:text-indigo-600 transition-colors">About</a>
 				</div>
 				<button 
-					class="px-5 py-2 bg-slate-900 text-white text-sm font-bold rounded-full hover:bg-slate-800 transition-colors shadow-md"
+					class="px-5 py-2 bg-slate-900 text-white text-sm font-bold rounded-full hover:bg-slate-800 transition-colors shadow-md whitespace-nowrap"
 					on:click={() => showApp = true}
 				>
 					Get Started
@@ -309,10 +316,10 @@
 	<div class="min-h-screen bg-slate-50 font-sans text-slate-900 flex flex-col">
 		<!-- Floating Glassmorphism Navbar -->
 		<div class="fixed top-6 left-0 right-0 z-50 flex justify-center px-4">
-			<header class="bg-white/70 backdrop-blur-xl border border-white/20 shadow-lg rounded-full px-6 py-3 flex items-center justify-between gap-8 max-w-2xl w-full transition-all duration-300 hover:shadow-xl hover:bg-white/80">
+			<header class="bg-white/70 backdrop-blur-xl border border-white/20 shadow-lg rounded-full px-4 py-2 md:px-6 md:py-3 flex items-center justify-between gap-4 md:gap-8 max-w-2xl w-full transition-all duration-300 hover:shadow-xl hover:bg-white/80">
 				<div class="flex items-center gap-3 cursor-pointer group" on:click={() => { showApp = false; suggestions = []; industry = ''; step = 1; }}>
-					<img src="/logo.jpg" alt="BrandPixy" class="w-8 h-8 rounded-lg shadow-sm group-hover:scale-105 transition-transform" />
-					<span class="text-lg font-bold text-slate-900 tracking-tight">BrandPixy</span>
+					<img src="/logo.jpg" alt="BrandPixy" class="h-10 w-auto object-contain mix-blend-multiply group-hover:scale-105 transition-transform" />
+					<span class="text-lg font-bold text-slate-900 tracking-tight hidden sm:block">BrandPixy</span>
 				</div>
 				
 				{#if step < 4}
