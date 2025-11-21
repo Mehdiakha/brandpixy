@@ -137,19 +137,19 @@ def generate_svg(name: str, idx: int = 0) -> str:
         shape = ['circle', 'rect', 'polygon'][idx % 3]
         shape_svg = ''
         if shape == 'circle':
-                shape_svg = f'<circle cx="70" cy="50" r="36" fill="{colors[0]}" opacity="0.95" />'
+                shape_svg = f'<circle cx="100" cy="100" r="80" fill="{colors[0]}" opacity="0.95" />'
         elif shape == 'rect':
-                shape_svg = f'<rect x="26" y="18" width="88" height="64" rx="14" fill="{colors[1]}" opacity="0.95" />'
+                shape_svg = f'<rect x="20" y="20" width="160" height="160" rx="30" fill="{colors[1]}" opacity="0.95" />'
         else:
-                shape_svg = f'<polygon points="70,8 112,92 28,92" fill="{colors[2]}" opacity="0.95" />'
+                shape_svg = f'<polygon points="100,20 180,180 20,180" fill="{colors[2]}" opacity="0.95" />'
 
-        svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="220" height="120" viewBox="0 0 140 84">
-    <rect width="100%" height="100%" rx="12" fill="#fff" />
-    <g transform="translate(12,6)">
+        # Increased viewBox for better resolution and scaling
+        svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 200 200" shape-rendering="geometricPrecision">
+    <rect width="100%" height="100%" rx="24" fill="#fff" />
+    <g>
         {shape_svg}
-        <text x="70" y="52" dominant-baseline="middle" text-anchor="middle" font-family="Inter, Arial, Helvetica, sans-serif" font-size="24" fill="#0f1720">{initials}</text>
+        <text x="100" y="100" dominant-baseline="middle" text-anchor="middle" font-family="Inter, Arial, Helvetica, sans-serif" font-size="60" font-weight="bold" fill="#0f1720">{initials}</text>
     </g>
-    <text x="8" y="78" font-family="Inter, Arial, Helvetica, sans-serif" font-size="9" fill="#333">{html.escape(name)}</text>
 </svg>'''
         return svg
 

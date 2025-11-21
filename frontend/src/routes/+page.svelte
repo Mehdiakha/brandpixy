@@ -34,6 +34,24 @@
 	function initLandingAnimations() {
 		const tl = gsap.timeline();
 		tl.from('.landing-content', { y: 50, opacity: 0, duration: 1, ease: 'power3.out' });
+		
+		// Logo animation: Drop and spin
+		gsap.fromTo('.hero-logo', 
+			{ y: -100, opacity: 0, rotation: -180 },
+			{ y: 0, opacity: 1, rotation: 0, duration: 1.5, ease: 'bounce.out', delay: 0.5 }
+		);
+
+		// Scroll animation for logo to spin when scrolling to features
+		gsap.to('.hero-logo', {
+			scrollTrigger: {
+				trigger: '#features',
+				start: 'top bottom',
+				end: 'center center',
+				scrub: 1
+			},
+			rotation: 360,
+			scale: 1.2
+		});
 	}
 
 	function nextStep() {
@@ -64,24 +82,6 @@
 		}
 	}
 
-	async function generateHQLogo(index, name) {
-		generatingLogoFor = index;
-		try {
-			const res = await fetch(`/api/generate-logo?name=${encodeURIComponent(name)}&vibe=${encodeURIComponent(vibe)}`, {
-				method: 'POST'
-			});
-			const data = await res.json();
-			if (data.url) {
-				suggestions[index].logoUrl = data.url;
-				suggestions = [...suggestions];
-			}
-		} catch (e) {
-			console.error(e);
-		} finally {
-			generatingLogoFor = null;
-		}
-	}
-
 	function downloadLogo(item) {
 		const name = item.name.replace(/\s+/g, '_').toLowerCase();
 		
@@ -104,9 +104,9 @@
 			const doc = parser.parseFromString(svgString, 'image/svg+xml');
 			const svg = doc.querySelector('svg');
 			
-			// Use aspect ratio from viewBox (0 0 140 84) -> 1.66
-			const width = 1400; 
-			const height = 840;
+			// Use aspect ratio from viewBox (0 0 200 200) -> 1:1
+			const width = 1024; 
+			const height = 1024;
 			
 			svg.setAttribute('width', width);
 			svg.setAttribute('height', height);
@@ -137,15 +137,16 @@
 </script>
 
 {#if !showApp}
-	<div class="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex flex-col items-center justify-center p-6 text-center landing-content relative overflow-hidden">
+	<div class="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex flex-col relative overflow-hidden">
 		<!-- Background Blobs -->
 		<div class="absolute top-20 left-20 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob"></div>
 		<div class="absolute top-20 right-20 w-72 h-72 bg-indigo-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-2000"></div>
 		<div class="absolute -bottom-8 left-1/2 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-4000"></div>
 
-		<div class="relative z-10 max-w-4xl mx-auto">
+		<!-- Hero Section -->
+		<div class="flex-1 flex flex-col items-center justify-center p-6 text-center landing-content relative z-10">
 			<div class="mb-8 flex justify-center">
-				<img src="/logo.jpg" alt="BrandPixy Logo" class="w-24 h-24 rounded-2xl shadow-2xl rotate-3 hover:rotate-0 transition-transform duration-500" />
+				<img src="/logo.jpg" alt="BrandPixy Logo" class="hero-logo w-32 h-32 rounded-3xl shadow-2xl" />
 			</div>
 			<h1 class="text-6xl md:text-8xl font-black text-slate-900 mb-8 tracking-tight leading-tight">
 				Brand<span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">Pixy</span>
@@ -165,6 +166,48 @@
 				<div class="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 			</button>
 		</div>
+
+		<!-- Features Section -->
+		<div id="features" class="py-20 bg-white/50 backdrop-blur-sm relative z-10">
+			<div class="max-w-7xl mx-auto px-6">
+				<h2 class="text-4xl font-bold text-center text-slate-900 mb-16">Why BrandPixy?</h2>
+				<div class="grid md:grid-cols-3 gap-12">
+					<div class="text-center p-6 rounded-2xl bg-white shadow-lg hover:shadow-xl transition-all">
+						<div class="text-5xl mb-6">⚡</div>
+						<h3 class="text-xl font-bold mb-3">Instant Generation</h3>
+						<p class="text-slate-600">Get dozens of unique brand names and logos in seconds.</p>
+					</div>
+					<div class="text-center p-6 rounded-2xl bg-white shadow-lg hover:shadow-xl transition-all">
+						<div class="text-5xl mb-6">🎨</div>
+						<h3 class="text-xl font-bold mb-3">Tailored Vibes</h3>
+						<p class="text-slate-600">Choose from Modern, Luxury, Tech, and more styles.</p>
+					</div>
+					<div class="text-center p-6 rounded-2xl bg-white shadow-lg hover:shadow-xl transition-all">
+						<div class="text-5xl mb-6">💎</div>
+						<h3 class="text-xl font-bold mb-3">Production Ready</h3>
+						<p class="text-slate-600">Download high-quality PNG logos instantly.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Footer -->
+		<footer class="bg-slate-900 text-slate-400 py-12 relative z-10">
+			<div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+				<div class="flex items-center gap-3">
+					<img src="/logo.jpg" alt="BrandPixy" class="w-8 h-8 rounded-lg opacity-80" />
+					<span class="text-white font-bold text-xl">BrandPixy</span>
+				</div>
+				<div class="text-sm">
+					&copy; {new Date().getFullYear()} BrandPixy. All rights reserved.
+				</div>
+				<div class="flex gap-6">
+					<a href="#" class="hover:text-white transition-colors">Privacy</a>
+					<a href="#" class="hover:text-white transition-colors">Terms</a>
+					<a href="#" class="hover:text-white transition-colors">Contact</a>
+				</div>
+			</div>
+		</footer>
 	</div>
 {:else}
 	<div class="min-h-screen bg-slate-50 font-sans text-slate-900 flex flex-col">
@@ -330,11 +373,11 @@
 								<div class="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden group flex flex-col" in:fade={{ delay: i * 50, duration: 300 }}>
 									<!-- Logo Area -->
 									<div class="p-8 flex-1 flex flex-col items-center text-center relative bg-slate-50/50 group-hover:bg-white transition-colors">
-										<div class="w-full aspect-[4/3] flex items-center justify-center mb-4 relative">
+										<div class="w-full aspect-square flex items-center justify-center mb-4 relative">
 											{#if s.logoUrl}
 												<img src={s.logoUrl} alt="{s.name} logo" class="w-full h-full object-contain drop-shadow-md" in:fade />
 											{:else}
-												<div class="transform scale-110 transition-transform duration-500 group-hover:scale-125 drop-shadow-sm">
+												<div class="w-full h-full transform transition-transform duration-500 group-hover:scale-110 drop-shadow-sm flex items-center justify-center">
 													{@html s.svg}
 												</div>
 											{/if}
@@ -344,27 +387,13 @@
 									</div>
 
 									<!-- Actions -->
-									<div class="p-4 border-t border-slate-100 bg-slate-50/80 grid grid-cols-2 gap-3">
+									<div class="p-4 border-t border-slate-100 bg-slate-50/80 grid grid-cols-1 gap-3">
 										<button 
-											class="py-2.5 px-4 bg-white border border-slate-200 text-slate-700 font-semibold rounded-xl text-sm hover:bg-slate-50 hover:text-indigo-600 hover:border-indigo-200 transition-all flex items-center justify-center gap-2 shadow-sm"
+											class="py-3 px-4 bg-indigo-600 text-white font-semibold rounded-xl text-sm hover:bg-indigo-700 shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2"
 											on:click={() => downloadLogo(s)}
 										>
 											<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-											Download
-										</button>
-										<button 
-											class="py-2.5 px-4 bg-indigo-600 text-white font-semibold rounded-xl text-sm hover:bg-indigo-700 shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
-											on:click={() => generateHQLogo(i, s.name)}
-											disabled={generatingLogoFor === i || s.logoUrl}
-										>
-											{#if generatingLogoFor === i}
-												<svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-											{:else if s.logoUrl}
-												<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-											{:else}
-												<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-											{/if}
-											{s.logoUrl ? 'Done' : 'HQ Icon'}
+											Download Logo
 										</button>
 									</div>
 								</div>
@@ -394,123 +423,3 @@
 		animation-delay: 4s;
 	}
 </style>
-
-
-{#if !showApp}
-	<div class="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50 flex flex-col items-center justify-center p-6 text-center landing-content">
-		<h1 class="text-5xl md:text-7xl font-extrabold text-indigo-900 mb-6 tracking-tight">
-			Brand<span class="text-indigo-600">Pixy</span>
-		</h1>
-		<p class="text-xl text-slate-600 max-w-2xl mb-10 leading-relaxed">
-			Generate unique brand identities, names, and logos in seconds using advanced AI.
-		</p>
-		<button 
-			class="px-8 py-4 bg-indigo-600 text-white text-lg font-bold rounded-full shadow-lg hover:bg-indigo-700 hover:shadow-xl transition-all transform hover:-translate-y-1"
-			on:click={() => showApp = true}
-		>
-			Start Generating
-		</button>
-	</div>
-{:else}
-	<div class="min-h-screen bg-slate-50 font-sans text-slate-900">
-		<!-- Header -->
-		<header class="bg-white border-b border-slate-200 sticky top-0 z-50">
-			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-				<div class="flex items-center gap-2 cursor-pointer" on:click={() => { showApp = false; suggestions = []; industry = ''; }}>
-					<div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold">B</div>
-					<span class="text-xl font-bold text-slate-900">BrandPixy</span>
-				</div>
-			</div>
-		</header>
-
-		<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-			<!-- Input Section -->
-			<div class="max-w-3xl mx-auto bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-12">
-				<div class="grid grid-cols-1 md:grid-cols-12 gap-6">
-					<div class="md:col-span-7">
-						<label for="industry" class="block text-sm font-medium text-slate-700 mb-2">Industry</label>
-						<input 
-							type="text" 
-							id="industry"
-							bind:value={industry}
-							placeholder="e.g. Coffee Shop, Tech Startup..."
-							class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
-						/>
-					</div>
-					<div class="md:col-span-3">
-						<label for="vibe" class="block text-sm font-medium text-slate-700 mb-2">Style / Vibe</label>
-						<select 
-							id="vibe"
-							bind:value={vibe}
-							class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all bg-white"
-						>
-							{#each vibes as v}
-								<option value={v}>{v}</option>
-							{/each}
-						</select>
-					</div>
-					<div class="md:col-span-2 flex items-end">
-						<button 
-							on:click={submit}
-							disabled={loading || !industry}
-							class="w-full py-3 px-4 bg-indigo-600 text-white font-semibold rounded-xl shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center"
-						>
-							{#if loading}
-								<svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-									<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-									<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-								</svg>
-							{:else}
-								Generate
-							{/if}
-						</button>
-					</div>
-				</div>
-			</div>
-
-			<!-- Results Section -->
-			{#if suggestions.length > 0}
-				<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-					{#each suggestions as s, i}
-						<div class="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden group flex flex-col" in:fade={{ delay: i * 50, duration: 300 }}>
-							<div class="p-6 flex-1 flex flex-col items-center text-center">
-								<div class="w-full aspect-video bg-slate-50 rounded-xl mb-4 flex items-center justify-center overflow-hidden relative group-hover:bg-indigo-50 transition-colors">
-									{#if s.logoUrl}
-										<img src={s.logoUrl} alt="{s.name} logo" class="w-full h-full object-contain p-4" in:fade />
-									{:else}
-										<div class="transform scale-75 opacity-80">
-											{@html s.svg}
-										</div>
-									{/if}
-								</div>
-								<h3 class="text-xl font-bold text-slate-900 mb-1">{s.name}</h3>
-								<p class="text-sm text-slate-500 leading-relaxed">{s.tagline}</p>
-							</div>
-							<div class="p-4 border-t border-slate-100 bg-slate-50/50">
-								<button 
-									class="w-full py-2 px-4 bg-white border border-slate-300 text-slate-700 font-medium rounded-lg text-sm hover:bg-slate-50 hover:text-indigo-600 hover:border-indigo-200 transition-all flex items-center justify-center gap-2"
-									on:click={() => generateLogo(i, s.name)}
-									disabled={generatingLogoFor === i || s.logoUrl}
-								>
-									{#if generatingLogoFor === i}
-										<svg class="animate-spin h-4 w-4 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-											<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-											<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-										</svg>
-										<span>Creating...</span>
-									{:else if s.logoUrl}
-										<svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-										<span>Logo Ready</span>
-									{:else}
-										<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-										<span>Generate Logo</span>
-									{/if}
-								</button>
-							</div>
-						</div>
-					{/each}
-				</div>
-			{/if}
-		</main>
-	</div>
-{/if}
