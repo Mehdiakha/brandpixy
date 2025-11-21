@@ -301,11 +301,11 @@
 					</div>
 				</div>
 			</div>
-			<h1 class="text-6xl md:text-8xl font-black text-slate-900 mb-8 tracking-tight leading-tight">
-				Brand<span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">Pixy</span>
+			<h1 class="text-5xl md:text-7xl font-black text-slate-900 mb-8 tracking-tight leading-tight">
+				Instant <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">Brand Identities</span>
 			</h1>
-			<p class="text-xl md:text-2xl text-slate-600 max-w-2xl mx-auto mb-12 leading-relaxed font-light">
-				Craft your entire brand identity in seconds.
+			<p class="text-xl md:text-2xl text-slate-500 max-w-2xl mx-auto mb-12 leading-relaxed font-light">
+				Free to start, No sign up required
 			</p>
 			<button 
 				class="group relative px-8 py-4 bg-slate-900 text-white text-lg font-bold rounded-full shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 overflow-hidden cursor-pointer"
