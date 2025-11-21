@@ -35,7 +35,13 @@
 		const tl = gsap.timeline();
 		tl.from('.landing-content', { y: 50, opacity: 0, duration: 1, ease: 'power3.out' });
 		
-		// Cube animation
+		// Cube animation: Drop from top with bounce
+		gsap.fromTo('.cube-container', 
+			{ y: -500, opacity: 0 },
+			{ y: 0, opacity: 1, duration: 1.5, ease: 'bounce.out', delay: 0.5 }
+		);
+
+		// Continuous rotation
 		gsap.to('.cube', {
 			rotationX: 360,
 			rotationY: 360,
@@ -54,7 +60,7 @@
 			},
 			rotationX: 720,
 			rotationY: 720,
-			scale: 1.2
+			scale: 1.5
 		});
 	}
 
@@ -181,7 +187,7 @@
 
 		<!-- Hero Section -->
 		<div class="flex-1 flex flex-col items-center justify-center p-6 text-center landing-content relative z-10">
-			<div class="mb-12 flex justify-center perspective-container">
+			<div class="mb-16 flex justify-center perspective-container cube-container">
 				<div class="cube">
 					<div class="face front">
 						<img src="/logo.jpg" alt="BrandPixy Logo" class="w-full h-full object-cover rounded-xl" />
@@ -262,26 +268,34 @@
 	</div>
 {:else}
 	<div class="min-h-screen bg-slate-50 font-sans text-slate-900 flex flex-col">
-		<!-- Header -->
-		<header class="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50">
-			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-				<div class="flex items-center gap-3 cursor-pointer" on:click={() => { showApp = false; suggestions = []; industry = ''; step = 1; }}>
-					<img src="/logo.jpg" alt="BrandPixy" class="w-8 h-8 rounded-lg shadow-sm" />
-					<span class="text-xl font-bold text-slate-900 tracking-tight">BrandPixy</span>
+		<!-- Floating Glassmorphism Navbar -->
+		<div class="fixed top-6 left-0 right-0 z-50 flex justify-center px-4">
+			<header class="bg-white/70 backdrop-blur-xl border border-white/20 shadow-lg rounded-full px-6 py-3 flex items-center justify-between gap-8 max-w-2xl w-full transition-all duration-300 hover:shadow-xl hover:bg-white/80">
+				<div class="flex items-center gap-3 cursor-pointer group" on:click={() => { showApp = false; suggestions = []; industry = ''; step = 1; }}>
+					<img src="/logo.jpg" alt="BrandPixy" class="w-8 h-8 rounded-lg shadow-sm group-hover:scale-105 transition-transform" />
+					<span class="text-lg font-bold text-slate-900 tracking-tight">BrandPixy</span>
 				</div>
+				
 				{#if step < 4}
-					<div class="flex items-center gap-2 text-sm font-medium text-slate-500">
+					<div class="hidden sm:flex items-center gap-2 text-xs font-medium text-slate-500 bg-slate-100/50 px-3 py-1.5 rounded-full">
 						<span class="{step >= 1 ? 'text-indigo-600' : ''}">1. Industry</span>
 						<span class="text-slate-300">/</span>
 						<span class="{step >= 2 ? 'text-indigo-600' : ''}">2. Vibe</span>
 						<span class="text-slate-300">/</span>
 						<span class="{step >= 3 ? 'text-indigo-600' : ''}">3. Values</span>
 					</div>
+				{:else}
+					<button 
+						class="text-sm font-medium text-slate-600 hover:text-indigo-600 transition-colors"
+						on:click={() => { step = 1; suggestions = []; }}
+					>
+						Start Over
+					</button>
 				{/if}
-			</div>
-		</header>
+			</header>
+		</div>
 
-		<main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full">
+		<main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 w-full">
 			
 			{#if step < 4}
 				<div class="max-w-2xl mx-auto">
@@ -490,9 +504,9 @@
 
 	/* Cube Animation Styles */
 	.perspective-container {
-		perspective: 1000px;
-		width: 160px;
-		height: 160px;
+		perspective: 1200px;
+		width: 200px;
+		height: 200px;
 	}
 
 	.cube {
@@ -505,15 +519,15 @@
 
 	.face {
 		position: absolute;
-		width: 160px;
-		height: 160px;
+		width: 200px;
+		height: 200px;
 		background: rgba(255, 255, 255, 0.95);
 		border: 1px solid rgba(255, 255, 255, 0.2);
-		border-radius: 1rem;
+		border-radius: 1.5rem;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		box-shadow: 0 0 20px rgba(0,0,0,0.1);
+		box-shadow: 0 0 30px rgba(0,0,0,0.15);
 		backface-visibility: hidden;
 		overflow: hidden;
 	}
@@ -524,10 +538,10 @@
 		object-fit: cover;
 	}
 
-	.front  { transform: rotateY(0deg) translateZ(80px); }
-	.back   { transform: rotateY(180deg) translateZ(80px); }
-	.right  { transform: rotateY(90deg) translateZ(80px); }
-	.left   { transform: rotateY(-90deg) translateZ(80px); }
-	.top    { transform: rotateX(90deg) translateZ(80px); background: #e0e7ff; }
-	.bottom { transform: rotateX(-90deg) translateZ(80px); background: #e0e7ff; }
+	.front  { transform: rotateY(0deg) translateZ(100px); }
+	.back   { transform: rotateY(180deg) translateZ(100px); }
+	.right  { transform: rotateY(90deg) translateZ(100px); }
+	.left   { transform: rotateY(-90deg) translateZ(100px); }
+	.top    { transform: rotateX(90deg) translateZ(100px); background: #e0e7ff; }
+	.bottom { transform: rotateX(-90deg) translateZ(100px); background: #e0e7ff; }
 </style>

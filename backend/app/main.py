@@ -207,8 +207,19 @@ async def generate_logo_endpoint(name: str, vibe: str):
     Dedicated endpoint to generate a high-quality DALL-E logo for a specific brand.
     Frontend can call this on demand (e.g., when user clicks a specific result).
     """
+    print(f"Received logo generation request for: {name}, vibe: {vibe}")
     try:
+        if not API_KEY:
+            print("No OpenAI API Key found for logo generation.")
+            raise HTTPException(status_code=500, detail="OpenAI API Key not configured")
+
         url = await generate_logo_image(name, vibe)
+        if not url:
+             print("OpenAI returned empty URL")
+             raise HTTPException(status_code=500, detail="Failed to generate image")
+             
+        print(f"Generated logo URL: {url}")
         return {"url": url}
     except Exception as e:
+        print(f"Error generating logo: {e}")
         raise HTTPException(status_code=500, detail=str(e))
