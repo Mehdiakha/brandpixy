@@ -26,6 +26,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/")
+async def root():
+    return {"status": "ok", "message": "BrandPixy API is running"}
+
+@app.get("/api/health")
+async def health_check():
+    return {"status": "ok", "openai_enabled": bool(API_KEY)}
+
 
 class BrandRequest(BaseModel):
     industry: str
@@ -158,33 +166,39 @@ def generate_svg(name: str, idx: int = 0) -> str:
 
 @app.post('/api/generate')
 async def generate(request: BrandRequest):
+    print(f"Received generation request: {request}")
     try:
         suggestions = []
         
         # 1. Generate Brand Names (using OpenAI if available)
         if API_KEY:
+            print("OpenAI API Key found. Attempting AI generation...")
             items = await generate_brand_names(request.industry, request.vibe, request.values)
+            print(f"OpenAI returned {len(items)} items.")
             
             # 2. Generate Logos (Using local SVG for speed/bulk)
-            # Note: We use local SVG generation for the list view because generating 
-            # 24 DALL-E images would take ~2 minutes and cost significantly more.
             for i, item in enumerate(items):
                 name = item.get('name')
                 tagline = item.get('tagline', '')
                 if name:
-                    # Use local SVG generator for instant results in the grid
                     svg = generate_svg(name, i)
                     suggestions.append({"name": name, "tagline": tagline, "svg": svg})
             
             # Fill with local if OpenAI returned fewer than 24
             if len(suggestions) < 24:
+                print(f"Filling remaining {24 - len(suggestions)} slots with local generation.")
                 remaining = 24 - len(suggestions)
                 suggestions.extend(local_generate(request, count=remaining))
         else:
+            print("No OpenAI API Key found. Using local generation.")
             suggestions = local_generate(request, count=24)
 
+        print(f"Returning {len(suggestions)} suggestions.")
         return {"suggestions": suggestions}
     except Exception as e:
+        print(f"CRITICAL ERROR in /api/generate: {str(e)}")
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post('/api/generate-logo')

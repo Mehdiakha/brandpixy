@@ -70,6 +70,8 @@
 		if (!industry) return;
 		loading = true;
 		suggestions = [];
+		console.log("Submitting generation request...", { industry, vibe, values });
+		
 		try {
 			const res = await fetch('/api/generate', {
 				method: 'POST',
@@ -77,16 +79,21 @@
 				body: JSON.stringify({ industry, vibe, values })
 			});
 			
+			console.log("Response status:", res.status);
+			
 			if (!res.ok) {
-				throw new Error(`API Error: ${res.status}`);
+				const errText = await res.text();
+				console.error("API Error Body:", errText);
+				throw new Error(`API Error: ${res.status} - ${errText}`);
 			}
 
 			const data = await res.json();
+			console.log("Received data:", data);
 			suggestions = data.suggestions || [];
 			step = 4; // Move to results
 		} catch (e) {
 			console.error("Generation failed:", e);
-			alert("Something went wrong while generating. Please try again.");
+			alert(`Error: ${e.message}. Check console for details.`);
 		} finally {
 			loading = false;
 		}
