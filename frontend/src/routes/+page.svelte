@@ -109,9 +109,8 @@
 			generateAllLogos();
 
 		} catch (e) {
-			console.error("Generation failed:", e);
-			alert(`Error: ${e.message}. Check console for details.`);
-		} finally {
+			console.error("Submission error:", e);
+			alert("Something went wrong. Please try again.");
 			loading = false;
 		}
 	}
@@ -213,30 +212,67 @@
 	}
 </script>
 
-{#if !showApp}
-	<div class="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex flex-col relative overflow-hidden">
-		<!-- Background Blobs -->
-		<div class="absolute top-20 left-20 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob"></div>
-		<div class="absolute top-20 right-20 w-72 h-72 bg-indigo-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-2000"></div>
-		<div class="absolute -bottom-8 left-1/2 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-4000"></div>
+<svelte:head>
+	<title>Instant Brand Identities | AI Logo Generator</title>
+	<meta name="description" content="Generate professional brand identities and logos instantly with AI. Free to start, no sign up required. Perfect for startups and entrepreneurs." />
+	<meta name="keywords" content="AI logo generator, brand identity, logo maker, startup branding, instant logos, free logo generator" />
+	<meta name="robots" content="index, follow" />
+	<link rel="canonical" href="https://brandpixy.com/" />
 
-		<!-- Landing Navbar -->
-		<div class="fixed top-6 left-0 right-0 z-50 flex justify-center px-4">
-			<nav class="bg-white/10 backdrop-blur-md border border-white/20 shadow-lg rounded-full px-4 py-2 md:px-6 md:py-3 flex items-center justify-between gap-4 md:gap-8 max-w-5xl w-full transition-all duration-300 hover:bg-white/20 relative z-50">
-				<div class="flex items-center gap-3 cursor-pointer" on:click={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-					<span class="text-lg font-bold text-slate-900 tracking-tight">BrandPixy</span>
+	<!-- Open Graph / Facebook -->
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content="https://brandpixy.com/" />
+	<meta property="og:title" content="Instant Brand Identities | AI Logo Generator" />
+	<meta property="og:description" content="Generate professional brand identities and logos instantly with AI. Free to start, no sign up required." />
+	<meta property="og:image" content="https://brandpixy.com/logo.jpg" />
+
+	<!-- Twitter -->
+	<meta property="twitter:card" content="summary_large_image" />
+	<meta property="twitter:url" content="https://brandpixy.com/" />
+	<meta property="twitter:title" content="Instant Brand Identities | AI Logo Generator" />
+	<meta property="twitter:description" content="Generate professional brand identities and logos instantly with AI. Free to start, no sign up required." />
+	<meta property="twitter:image" content="https://brandpixy.com/logo.jpg" />
+
+	<!-- Schema.org JSON-LD -->
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "SoftwareApplication",
+		"name": "Instant Brand Identities",
+		"applicationCategory": "DesignApplication",
+		"operatingSystem": "Web",
+		"offers": {
+			"@type": "Offer",
+			"price": "0",
+			"priceCurrency": "USD"
+		},
+		"description": "Generate professional brand identities and logos instantly with AI."
+	}
+	</script>
+</svelte:head>
+
+{#if !showApp}
+	<div class="min-h-screen bg-black text-white overflow-hidden font-sans selection:bg-purple-500 selection:text-white">
+		<!-- Navbar -->
+		<nav class="fixed w-full z-50 top-0 left-0 border-b border-white/10 bg-black/50 backdrop-blur-md">
+			<div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+				<div class="flex items-center gap-2">
+					<a href="https://brandpixy.com/" class="flex items-center gap-2">
+						<img src="/logo.jpg" alt="BrandPixy Logo" class="w-8 h-8 rounded-full" />
+						<span class="text-xl font-bold tracking-tight">BrandPixy</span>
+					</a>
 				</div>
 				
 				<!-- Desktop Menu -->
-				<div class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600">
-					<a href="#features" class="hover:text-indigo-600 transition-colors">Features</a>
-					<a href="#" class="hover:text-indigo-600 transition-colors">Pricing</a>
-					<a href="#" class="hover:text-indigo-600 transition-colors">About</a>
+				<div class="hidden md:flex items-center gap-6 text-sm font-medium">
+					<a href="#features" class="hover:text-indigo-400 transition-colors">Features</a>
+					<a href="#" class="hover:text-indigo-400 transition-colors">Pricing</a>
+					<a href="#" class="hover:text-indigo-400 transition-colors">About</a>
 				</div>
 
 				<div class="flex items-center gap-4">
 					<button 
-						class="hidden md:block px-5 py-2 bg-slate-900 text-white text-sm font-bold rounded-full hover:bg-slate-800 transition-colors shadow-md whitespace-nowrap"
+						class="hidden md:block px-5 py-2 bg-indigo-600 text-white text-sm font-bold rounded-full hover:bg-indigo-500 transition-colors shadow-md whitespace-nowrap"
 						on:click={() => showApp = true}
 					>
 						Get Started
@@ -244,7 +280,7 @@
 
 					<!-- Mobile Hamburger -->
 					<button 
-						class="md:hidden p-2 text-slate-800 hover:bg-white/20 rounded-full transition-colors"
+						class="md:hidden p-2 text-white hover:bg-white/20 rounded-full transition-colors"
 						on:click={() => isMenuOpen = !isMenuOpen}
 					>
 						<div class="w-6 h-5 relative flex flex-col justify-between">
