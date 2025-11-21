@@ -43,14 +43,22 @@
 			{ y: 0, opacity: 1, duration: 1.5, ease: 'bounce.out', delay: 0.5 }
 		);
 
+		// Infinite slow spin
+		gsap.to('.cube-wrapper', {
+			rotationY: 360,
+			duration: 20,
+			repeat: -1,
+			ease: 'none'
+		});
+
 		// Interactive Mouse Movement
 		const handleMouseMove = (e) => {
 			const x = (e.clientX / window.innerWidth - 0.5) * 2;
 			const y = (e.clientY / window.innerHeight - 0.5) * 2;
 
 			gsap.to('.cube', {
-				rotationY: x * 50 + 25, // Subtle rotation following mouse
-				rotationX: -y * 50 - 25,
+				rotationY: x * 30, // Reduced rotation range for better stability with infinite spin
+				rotationX: -y * 30,
 				duration: 1,
 				ease: 'power2.out'
 			});
@@ -270,22 +278,27 @@
 
 		<!-- Hero Section -->
 		<div class="flex-1 flex flex-col items-center justify-center p-6 text-center landing-content relative z-10 mt-32">
-			<div class="mb-16 flex justify-center perspective-container cube-container">
-				<div class="cube">
-					<div class="face front">
-						<img src="/logo.jpg" alt="BrandPixy Logo" class="w-full h-full object-cover rounded-xl" />
+			<div class="mb-16 flex justify-center perspective-container cube-container relative">
+				<!-- Radiant Glow -->
+				<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-indigo-500/30 blur-[80px] rounded-full pointer-events-none animate-pulse"></div>
+				
+				<div class="cube-wrapper">
+					<div class="cube">
+						<div class="face front">
+							<img src="/logo.jpg" alt="BrandPixy Logo" class="w-full h-full object-cover rounded-xl" />
+						</div>
+						<div class="face back">
+							<img src="/logo.jpg" alt="BrandPixy Logo" class="w-full h-full object-cover rounded-xl" />
+						</div>
+						<div class="face right">
+							<img src="/logo.jpg" alt="BrandPixy Logo" class="w-full h-full object-cover rounded-xl" />
+						</div>
+						<div class="face left">
+							<img src="/logo.jpg" alt="BrandPixy Logo" class="w-full h-full object-cover rounded-xl" />
+						</div>
+						<div class="face top"></div>
+						<div class="face bottom"></div>
 					</div>
-					<div class="face back">
-						<img src="/logo.jpg" alt="BrandPixy Logo" class="w-full h-full object-cover rounded-xl" />
-					</div>
-					<div class="face right">
-						<img src="/logo.jpg" alt="BrandPixy Logo" class="w-full h-full object-cover rounded-xl" />
-					</div>
-					<div class="face left">
-						<img src="/logo.jpg" alt="BrandPixy Logo" class="w-full h-full object-cover rounded-xl" />
-					</div>
-					<div class="face top"></div>
-					<div class="face bottom"></div>
 				</div>
 			</div>
 			<h1 class="text-6xl md:text-8xl font-black text-slate-900 mb-8 tracking-tight leading-tight">
@@ -653,6 +666,13 @@
 		perspective: 1000px;
 		width: 120px;
 		height: 120px;
+	}
+
+	.cube-wrapper {
+		width: 100%;
+		height: 100%;
+		position: relative;
+		transform-style: preserve-3d;
 	}
 
 	.cube {
