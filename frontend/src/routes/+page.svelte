@@ -310,7 +310,6 @@
 					</button>
 				</div>
 			{/if}
-		</div>
 
 		<!-- Hero Section -->
 		<div class="flex-1 flex flex-col items-center justify-center p-6 text-center landing-content relative z-10 mt-32">
