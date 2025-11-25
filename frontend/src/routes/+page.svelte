@@ -100,7 +100,7 @@
 			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 				<div class="flex justify-between items-center h-20">
 					<div class="flex items-center gap-3">
-						<div class="relative w-12 h-12">
+						<div class="relative w-20 h-20">
 							<img
 								src="/logo01.png"
 								alt="BrandPixy"
@@ -238,15 +238,10 @@
 						style="animation-delay: 0.3s"
 					>
 						<button
-							class="btn btn-primary text-lg px-8 py-4 w-full sm:w-auto"
+							class="btn text-lg px-10 py-5 w-full sm:w-auto bg-gradient-to-r from-brand-600 to-brand-400 text-white font-bold shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 rounded-xl"
 							onclick={() => (showApp = true)}
 						>
 							Start Generating Free
-						</button>
-						<button
-							class="btn btn-secondary text-lg px-8 py-4 w-full sm:w-auto"
-						>
-							View Examples
 						</button>
 					</div>
 
