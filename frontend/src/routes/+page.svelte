@@ -236,8 +236,8 @@
 				<!-- Desktop Menu -->
 				<div class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600 dark:text-slate-300">
 					<a href="#features" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Features</a>
-					<a href="#" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Pricing</a>
-					<a href="#" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">About</a>
+					<button class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors bg-transparent border-0 cursor-pointer">Pricing</button>
+					<button class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors bg-transparent border-0 cursor-pointer">About</button>
 				</div>
 
 				<div class="flex items-center gap-4">
@@ -273,8 +273,8 @@
 					out:slide={{ duration: 200, axis: 'y' }}
 				>
 					<a href="#features" class="p-3 text-slate-700 dark:text-slate-200 font-medium hover:bg-slate-100 dark:hover:bg-white/10 rounded-xl transition-colors" onclick={() => isMenuOpen = false}>Features</a>
-					<a href="#" class="p-3 text-slate-700 dark:text-slate-200 font-medium hover:bg-slate-100 dark:hover:bg-white/10 rounded-xl transition-colors" onclick={() => isMenuOpen = false}>Pricing</a>
-					<a href="#" class="p-3 text-slate-700 dark:text-slate-200 font-medium hover:bg-slate-100 dark:hover:bg-white/10 rounded-xl transition-colors" onclick={() => isMenuOpen = false}>About</a>
+					<button class="p-3 text-slate-700 dark:text-slate-200 font-medium hover:bg-slate-100 dark:hover:bg-white/10 rounded-xl transition-colors text-left w-full" onclick={() => isMenuOpen = false}>Pricing</button>
+					<button class="p-3 text-slate-700 dark:text-slate-200 font-medium hover:bg-slate-100 dark:hover:bg-white/10 rounded-xl transition-colors text-left w-full" onclick={() => isMenuOpen = false}>About</button>
 					<button 
 						class="w-full py-3 bg-slate-900 dark:bg-indigo-600 text-white font-bold rounded-xl shadow-md"
 						onclick={() => { isMenuOpen = false; showApp = true; }}
@@ -363,9 +363,9 @@
 					&copy; {new Date().getFullYear()} BrandPixy. All rights reserved.
 				</div>
 				<div class="flex gap-6">
-					<a href="#" class="hover:text-white transition-colors">Privacy</a>
-					<a href="#" class="hover:text-white transition-colors">Terms</a>
-					<a href="#" class="hover:text-white transition-colors">Contact</a>
+					<button class="hover:text-white transition-colors bg-transparent border-0 cursor-pointer">Privacy</button>
+					<button class="hover:text-white transition-colors bg-transparent border-0 cursor-pointer">Terms</button>
+					<button class="hover:text-white transition-colors bg-transparent border-0 cursor-pointer">Contact</button>
 				</div>
 			</div>
 		</footer>
@@ -375,7 +375,7 @@
 		<!-- Floating Glassmorphism Navbar -->
 		<div class="fixed top-6 left-0 right-0 z-50 flex justify-center px-4">
 			<header class="bg-white/70 backdrop-blur-xl border border-white/20 shadow-lg rounded-full px-4 py-2 md:px-6 md:py-3 flex items-center justify-between gap-4 md:gap-8 max-w-2xl w-full transition-all duration-300 hover:shadow-xl hover:bg-white/80">
-				<div class="flex items-center gap-3 cursor-pointer group" onclick={() => { showApp = false; suggestions = []; industry = ''; step = 1; }} onkeydown={(e) => e.key === 'Enter' && (showApp = false)}>
+				<div class="flex items-center gap-3 cursor-pointer group" onclick={() => { showApp = false; suggestions = []; industry = ''; step = 1; }} onkeydown={(e) => e.key === 'Enter' && (showApp = false)} role="button" tabindex="0">
 					<span class="text-lg font-bold text-slate-900 tracking-tight">BrandPixy</span>
 				</div>
 				
@@ -422,7 +422,6 @@
 									placeholder="e.g. Coffee Shop, AI Startup, Fashion Brand..."
 									class="w-full px-6 py-4 text-lg rounded-2xl border-2 border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 outline-none transition-all shadow-sm"
 									onkeydown={(e) => e.key === 'Enter' && industry && nextStep()}
-									autofocus
 								/>
 								<button 
 									class="absolute right-3 top-3 bottom-3 px-6 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 disabled:opacity-50 disabled:hover:bg-indigo-600 transition-colors"
@@ -488,7 +487,6 @@
 									placeholder="e.g. Sustainability, Speed, Trust..."
 									class="w-full px-6 py-4 text-lg rounded-2xl border-2 border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 outline-none transition-all shadow-sm"
 									onkeydown={(e) => e.key === 'Enter' && submit()}
-									autofocus
 								/>
 							</div>
 
@@ -606,7 +604,7 @@
 		<div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg relative z-10 overflow-hidden" in:fly={{ y: 20, duration: 300 }}>
 			<div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-8 text-white text-center relative overflow-hidden">
 				<div class="absolute top-0 left-0 w-full h-full bg-[url('/grid.svg')] opacity-20"></div>
-				<button class="absolute top-4 right-4 text-white/70 hover:text-white transition-colors" onclick={() => showUnlockModal = false}>
+				<button class="absolute top-4 right-4 text-white/70 hover:text-white transition-colors" onclick={() => showUnlockModal = false} aria-label="Close">
 					<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
 				</button>
 				<div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4 backdrop-blur-md">
