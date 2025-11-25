@@ -4,7 +4,7 @@
 	import { injectAnalytics } from '@vercel/analytics/sveltekit';
 
 	let { children } = $props();
-	injectAnalytics({ mode: dev ? 'development' : 'production' });
+	injectAnalytics({ mode: dev ? 'development' : 'production' });	
 </script>
 
 <svelte:head>
