@@ -633,16 +633,16 @@
 								style="animation-delay: {i * 100}ms"
 							>
 								<div
-									class="aspect-video bg-surface-50 flex items-center justify-center p-8 group-hover:bg-surface-100 transition-colors relative"
+									class="aspect-square bg-surface-50 flex items-center justify-center p-6 group-hover:bg-surface-100 transition-colors relative"
 								>
 									{#if s.logoUrl}
 										<img
 											src={s.logoUrl}
 											alt={s.name}
-											class="w-32 h-32 object-contain drop-shadow-lg"
+											class="w-full h-full object-contain drop-shadow-md transition-transform duration-500 group-hover:scale-110"
 										/>
 									{:else}
-										<div class="w-32 h-32 text-brand-600">
+										<div class="w-full h-full text-brand-600 p-4 transition-transform duration-500 group-hover:scale-110">
 											{@html s.svg}
 										</div>
 									{/if}
