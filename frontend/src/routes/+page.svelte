@@ -64,7 +64,8 @@
 			});
 
 			if (!response.ok) {
-				throw new Error("Failed to generate brands");
+				const errData = await response.json().catch(() => ({}));
+				throw new Error(errData.detail || "Failed to generate brands");
 			}
 
 			const data = await response.json();
