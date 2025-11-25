@@ -51,7 +51,7 @@
 		suggestions = [];
 
 		try {
-			const response = await fetch("http://127.0.0.1:8000/api/generate", {
+			const response = await fetch("/api/generate", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
@@ -96,8 +96,10 @@
 {#if !showApp}
 	<div class="min-h-screen flex flex-col">
 		<!-- Navigation -->
-		<nav class="sticky top-0 z-50 glass border-b border-surface-200/50">
-			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+		<nav
+			class="sticky top-4 z-50 max-w-5xl mx-auto rounded-2xl glass border border-surface-200/50 shadow-xl transition-all duration-300"
+		>
+			<div class="px-4 sm:px-6 lg:px-8">
 				<div class="flex justify-between items-center h-16">
 					<div class="flex items-center gap-3">
 						<div class="relative w-12 h-12">
@@ -193,7 +195,7 @@
 		<main class="flex-grow">
 			<div class="relative overflow-hidden pt-20 pb-32">
 				<div
-					class="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-brand-500/10 blur-[120px] rounded-full pointer-events-none"
+					class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-brand-500/5 rounded-full pointer-events-none"
 				></div>
 
 				<div
