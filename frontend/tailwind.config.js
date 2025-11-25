@@ -4,6 +4,11 @@ export default {
   darkMode: 'class',
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+        brutal: ['Instrument Sans', 'Inter', 'system-ui', 'sans-serif'],
+        mono: ['Space Mono', 'ui-monospace', 'monospace']
+      },
       colors: {
         'brand': {
           'purple': '#6439FF',
@@ -15,7 +20,11 @@ export default {
           'bg': '#0f172a',
           'surface': '#1e293b',
           'border': '#334155',
-        }
+        },
+        ink: '#0A0A0A',
+        paper: '#FFFFFF',
+        accent: '#6439FF',
+        accentAlt: '#4F75FF'
       },
       backgroundImage: {
         'gradient-brand': 'linear-gradient(135deg, #6439FF, #4F75FF, #00CCDD)',
@@ -51,6 +60,18 @@ export default {
           '100%': { backgroundPosition: '1000px 0' },
         },
       },
+      boxShadow: {
+        hard: '4px 4px 0 0 #000',
+        'hard-light': '4px 4px 0 0 #6439FF',
+        'hard-lg': '6px 6px 0 0 #000'
+      },
+      borderWidth: {
+        3: '3px'
+      },
+      rotate: {
+        1: '1deg',
+        2: '2deg'
+      }
     },
   },
   plugins: [],

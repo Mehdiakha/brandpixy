@@ -16,7 +16,11 @@
     --text-primary: #0f172a;
     --text-secondary: #475569;
     --text-tertiary: #64748b;
-    --border-color: #e2e8f0;
+    --border-color: #0f172a;
+    --brut-ink: #0A0A0A;
+    --brut-paper: #FFFFFF;
+    --brut-accent: #6439FF;
+    --brut-accent-alt: #4F75FF;
 }
 
 /* Dark Theme */
@@ -31,8 +35,44 @@ html.dark {
     --text-primary: #f1f5f9;
     --text-secondary: #cbd5e1;
     --text-tertiary: #94a3b8;
-    --border-color: #475569;
+    --border-color: #f1f5f9;
+    --brut-ink: #F8F8F8;
+    --brut-paper: #0F0F0F;
+    --brut-accent: #7c5dff;
+    --brut-accent-alt: #5f8fff;
 }
+
+/* Brutalist helper classes */
+.brut-bg {
+    background: var(--brut-paper) !important;
+    color: var(--brut-ink) !important;
+}
+.dark .brut-bg {
+    background: var(--brut-paper) !important;
+    color: var(--brut-ink) !important;
+}
+.brut-block {
+    border: 4px solid var(--brut-ink);
+    background: var(--brut-paper);
+    box-shadow: 6px 6px 0 0 var(--brut-ink);
+}
+.dark .brut-block {
+    border-color: var(--brut-accent);
+    box-shadow: 6px 6px 0 0 var(--brut-accent);
+}
+.brut-accent-text { color: var(--brut-accent); }
+.brut-accent-bg { background: var(--brut-accent); color: #fff; }
+.brut-btn {
+    border: 4px solid var(--brut-ink);
+    background: var(--brut-accent);
+    color: #fff;
+    font-weight: 700;
+    box-shadow: 4px 4px 0 0 var(--brut-ink);
+    transition: transform .15s ease, box-shadow .15s ease;
+}
+.brut-btn:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 0 var(--brut-ink); }
+.dark .brut-btn { border-color: var(--brut-accent-alt); box-shadow: 4px 4px 0 0 var(--brut-accent-alt); }
+.dark .brut-btn:hover { box-shadow: 6px 6px 0 0 var(--brut-accent-alt); }
 
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
