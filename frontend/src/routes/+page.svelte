@@ -217,28 +217,28 @@
 </svelte:head>
 
 {#if !showApp}
-	<div class="min-h-screen bg-gradient-to-b from-white via-slate-50 to-white text-slate-900 overflow-hidden font-sans selection:bg-indigo-500 selection:text-white">
+	<div class="min-h-screen bg-gradient-to-b from-white dark:from-slate-950 via-slate-50 dark:via-slate-900 to-white dark:to-slate-950 text-slate-900 dark:text-slate-50 overflow-hidden font-sans selection:bg-brand-purple selection:text-white">
 		<!-- Navbar -->
-		<nav class="fixed w-full z-50 top-0 left-0 border-b border-slate-200/40 bg-white/70 backdrop-blur-md">
+		<nav class="fixed w-full z-50 top-0 left-0 border-b border-slate-200/40 dark:border-slate-700/40 bg-white/70 dark:bg-slate-950/70 backdrop-blur-md transition-colors duration-300">
 			<div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-				<div class="flex items-center gap-2">
+				<div class="flex items-center gap-3">
 					<a href="https://brandpixy.com/" class="flex items-center gap-2">
-						<img src="/logo.jpg" alt="BrandPixy Logo" class="w-8 h-8 rounded-full" />
-						<span class="text-xl font-bold tracking-tight text-slate-900">BrandPixy</span>
+						<img src="/logo.jpg" alt="BrandPixy Logo" class="w-12 h-12 rounded-full hover:scale-110 transition-transform duration-300" />
+						<span class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">BrandPixy</span>
 					</a>
 				</div>
 				
 				<!-- Desktop Menu -->
-				<div class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600">
-					<a href="#features" class="hover:text-indigo-600 transition-colors">Features</a>
-					<button class="hover:text-indigo-600 transition-colors bg-transparent border-0 cursor-pointer">Pricing</button>
-					<button class="hover:text-indigo-600 transition-colors bg-transparent border-0 cursor-pointer">About</button>
+				<div class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600 dark:text-slate-300">
+					<a href="#features" class="hover:text-brand-purple dark:hover:text-brand-purple transition-colors">Features</a>
+					<button class="hover:text-brand-purple dark:hover:text-brand-purple transition-colors bg-transparent border-0 cursor-pointer">Pricing</button>
+					<button class="hover:text-brand-purple dark:hover:text-brand-purple transition-colors bg-transparent border-0 cursor-pointer">About</button>
 				</div>
 
 				<div class="flex items-center gap-4">
 					<ThemeToggle />
 					<button 
-						class="hidden md:block px-5 py-2 bg-indigo-600 text-white text-sm font-bold rounded-full hover:bg-indigo-700 transition-colors shadow-md whitespace-nowrap"
+						class="hidden md:block px-5 py-2 bg-gradient-to-r from-brand-purple to-brand-blue text-white text-sm font-bold rounded-full hover:shadow-lg hover:shadow-brand-purple/50 hover:-translate-y-1 transition-all shadow-md whitespace-nowrap"
 						onclick={() => showApp = true}
 					>
 						Get Started
@@ -246,7 +246,7 @@
 
 					<!-- Mobile Hamburger -->
 					<button 
-						class="md:hidden p-2 text-slate-900 hover:bg-slate-100 rounded-full transition-colors"
+						class="md:hidden p-2 text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
 						onclick={() => isMenuOpen = !isMenuOpen}
 						aria-label="Menu"
 					>
@@ -263,15 +263,15 @@
 			<!-- Mobile Menu Overlay -->
 			{#if isMenuOpen}
 				<div 
-					class="absolute top-full left-4 right-4 mt-2 p-4 bg-white/90 backdrop-blur-xl border border-slate-200/40 rounded-3xl shadow-xl flex flex-col gap-4 md:hidden origin-top z-40"
+					class="absolute top-full left-4 right-4 mt-2 p-4 bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl border border-slate-200/40 dark:border-slate-700/40 rounded-3xl shadow-xl flex flex-col gap-4 md:hidden origin-top z-40"
 					in:slide={{ duration: 300, axis: 'y' }}
 					out:slide={{ duration: 200, axis: 'y' }}
 				>
-					<a href="#features" class="p-3 text-slate-700 font-medium hover:bg-slate-100 rounded-xl transition-colors" onclick={() => isMenuOpen = false}>Features</a>
-					<button class="p-3 text-slate-700 font-medium hover:bg-slate-100 rounded-xl transition-colors text-left w-full" onclick={() => isMenuOpen = false}>Pricing</button>
-					<button class="p-3 text-slate-700 font-medium hover:bg-slate-100 rounded-xl transition-colors text-left w-full" onclick={() => isMenuOpen = false}>About</button>
+					<a href="#features" class="p-3 text-slate-700 dark:text-slate-200 font-medium hover:bg-slate-100 dark:hover:bg-slate-700 rounded-xl transition-colors" onclick={() => isMenuOpen = false}>Features</a>
+					<button class="p-3 text-slate-700 dark:text-slate-200 font-medium hover:bg-slate-100 dark:hover:bg-slate-700 rounded-xl transition-colors text-left w-full" onclick={() => isMenuOpen = false}>Pricing</button>
+					<button class="p-3 text-slate-700 dark:text-slate-200 font-medium hover:bg-slate-100 dark:hover:bg-slate-700 rounded-xl transition-colors text-left w-full" onclick={() => isMenuOpen = false}>About</button>
 					<button 
-						class="w-full py-3 bg-slate-900 text-white font-bold rounded-xl shadow-md"
+						class="w-full py-3 bg-gradient-to-r from-brand-purple to-brand-blue text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all"
 						onclick={() => { isMenuOpen = false; showApp = true; }}
 					>
 						Get Started
@@ -281,14 +281,14 @@
 
 		<!-- Hero Section -->
 		<div class="flex-1 flex flex-col items-center justify-center p-6 text-center landing-content relative z-10 mt-32" in:fade={{ duration: 600 }}>
-			<h1 class="text-6xl md:text-7xl font-black text-slate-900 mb-8 tracking-tight leading-tight">
-				Instant <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600">Brand Identities</span>
+			<h1 class="text-6xl md:text-7xl font-black text-slate-900 dark:text-white mb-8 tracking-tight leading-tight">
+				Instant <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-purple via-brand-blue to-brand-cyan">Brand Identities</span>
 			</h1>
-			<p class="text-xl md:text-2xl text-slate-600 max-w-2xl mx-auto mb-12 leading-relaxed font-light">
+			<p class="text-xl md:text-2xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto mb-12 leading-relaxed font-light">
 				Create stunning logos and brand names in seconds. Powered by AI, owned by you.
 			</p>
 			<button 
-				class="group relative px-8 py-4 bg-indigo-600 text-white text-lg font-bold rounded-full shadow-lg hover:shadow-xl hover:bg-indigo-700 hover:-translate-y-1 transition-all duration-300 overflow-hidden cursor-pointer"
+				class="group relative px-8 py-4 bg-gradient-to-r from-brand-purple to-brand-blue text-white text-lg font-bold rounded-full shadow-lg hover:shadow-xl hover:shadow-brand-purple/50 hover:-translate-y-1 transition-all duration-300 overflow-hidden cursor-pointer"
 				onclick={() => showApp = true}
 			>
 				<span class="relative z-10 flex items-center gap-2">
@@ -299,70 +299,70 @@
 		</div>
 
 		<!-- Features Section -->
-		<div id="features" class="py-24 bg-white border-t border-slate-200/40 relative z-10">
+		<div id="features" class="py-24 bg-white dark:bg-slate-900 border-t border-slate-200/40 dark:border-slate-700/40 relative z-10">
 			<div class="max-w-7xl mx-auto px-6">
-				<h2 class="text-4xl font-bold text-center text-slate-900 mb-16">Why BrandPixy?</h2>
+				<h2 class="text-4xl font-bold text-center text-slate-900 dark:text-white mb-16">Why BrandPixy?</h2>
 				<div class="grid md:grid-cols-3 gap-8 md:gap-12">
 					<!-- Feature 1 -->
-					<div class="text-center p-8 rounded-3xl bg-gradient-to-br from-indigo-50 to-transparent border border-indigo-200/50 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all">
+					<div class="text-center p-8 rounded-3xl bg-gradient-to-br from-brand-purple/10 dark:from-brand-purple/20 to-transparent border border-brand-purple/20 dark:border-brand-purple/30 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all">
 						<div class="text-5xl mb-6">⚡</div>
-						<h3 class="text-xl font-bold mb-3 text-slate-900">Lightning Fast</h3>
-						<p class="text-slate-600 leading-relaxed">Get dozens of unique logos and brand names in seconds.</p>
+						<h3 class="text-xl font-bold mb-3 text-slate-900 dark:text-white">Lightning Fast</h3>
+						<p class="text-slate-600 dark:text-slate-300 leading-relaxed">Get dozens of unique logos and brand names in seconds.</p>
 					</div>
 					<!-- Feature 2 -->
-					<div class="text-center p-8 rounded-3xl bg-gradient-to-br from-purple-50 to-transparent border border-purple-200/50 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all">
+					<div class="text-center p-8 rounded-3xl bg-gradient-to-br from-brand-blue/10 dark:from-brand-blue/20 to-transparent border border-brand-blue/20 dark:border-brand-blue/30 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all">
 						<div class="text-5xl mb-6">🎨</div>
-						<h3 class="text-xl font-bold mb-3 text-slate-900">Fully Customizable</h3>
-						<p class="text-slate-600 leading-relaxed">Choose from Modern, Luxury, Tech styles and more.</p>
+						<h3 class="text-xl font-bold mb-3 text-slate-900 dark:text-white">Fully Customizable</h3>
+						<p class="text-slate-600 dark:text-slate-300 leading-relaxed">Choose from Modern, Luxury, Tech styles and more.</p>
 					</div>
 					<!-- Feature 3 -->
-					<div class="text-center p-8 rounded-3xl bg-gradient-to-br from-pink-50 to-transparent border border-pink-200/50 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all">
+					<div class="text-center p-8 rounded-3xl bg-gradient-to-br from-brand-cyan/10 dark:from-brand-cyan/20 to-transparent border border-brand-cyan/20 dark:border-brand-cyan/30 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all">
 						<div class="text-5xl mb-6">💎</div>
-						<h3 class="text-xl font-bold mb-3 text-slate-900">Production Ready</h3>
-						<p class="text-slate-600 leading-relaxed">Download high-quality PNG and SVG files instantly.</p>
+						<h3 class="text-xl font-bold mb-3 text-slate-900 dark:text-white">Production Ready</h3>
+						<p class="text-slate-600 dark:text-slate-300 leading-relaxed">Download high-quality PNG and SVG files instantly.</p>
 					</div>
 				</div>
 			</div>
 		</div>
 
 		<!-- Footer -->
-		<footer class="bg-slate-50 text-slate-600 py-12 border-t border-slate-200/40 relative z-10">
+		<footer class="bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-300 py-12 border-t border-slate-200/40 dark:border-slate-700/40 relative z-10">
 			<div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
 				<div class="flex items-center gap-3">
-					<img src="/logo.jpg" alt="BrandPixy" class="w-8 h-8 rounded-lg" />
-					<span class="text-slate-900 font-bold text-xl">BrandPixy</span>
+					<img src="/logo.jpg" alt="BrandPixy" class="w-10 h-10 rounded-lg" />
+					<span class="text-slate-900 dark:text-white font-bold text-xl">BrandPixy</span>
 				</div>
 				<div class="text-sm">
 					&copy; {new Date().getFullYear()} BrandPixy. All rights reserved.
 				</div>
 				<div class="flex gap-6">
-					<button class="hover:text-slate-900 transition-colors bg-transparent border-0 cursor-pointer">Privacy</button>
-					<button class="hover:text-slate-900 transition-colors bg-transparent border-0 cursor-pointer">Terms</button>
-					<button class="hover:text-slate-900 transition-colors bg-transparent border-0 cursor-pointer">Contact</button>
+					<button class="hover:text-slate-900 dark:hover:text-white transition-colors bg-transparent border-0 cursor-pointer">Privacy</button>
+					<button class="hover:text-slate-900 dark:hover:text-white transition-colors bg-transparent border-0 cursor-pointer">Terms</button>
+					<button class="hover:text-slate-900 dark:hover:text-white transition-colors bg-transparent border-0 cursor-pointer">Contact</button>
 				</div>
 			</div>
 		</footer>
 	</div>
 {:else}
-	<div class="min-h-screen bg-gradient-to-b from-white via-slate-50 to-white font-sans text-slate-900 flex flex-col">
+	<div class="min-h-screen bg-gradient-to-b from-white dark:from-slate-950 via-slate-50 dark:via-slate-900 to-white dark:to-slate-950 font-sans text-slate-900 dark:text-slate-50 flex flex-col transition-colors duration-300">
 		<!-- Floating Glassmorphism Navbar -->
 		<div class="fixed top-6 left-0 right-0 z-50 flex justify-center px-4">
-			<header class="bg-white/80 backdrop-blur-xl border border-slate-200/50 shadow-md rounded-full px-4 py-2 md:px-6 md:py-3 flex items-center justify-between gap-4 md:gap-8 max-w-2xl w-full transition-all duration-300 hover:shadow-lg hover:bg-white">
+			<header class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl border border-slate-200/50 dark:border-slate-700/50 shadow-md dark:shadow-xl rounded-full px-4 py-2 md:px-6 md:py-3 flex items-center justify-between gap-4 md:gap-8 max-w-2xl w-full transition-all duration-300 hover:shadow-lg dark:hover:shadow-xl hover:bg-white dark:hover:bg-slate-800">
 				<div class="flex items-center gap-3 cursor-pointer group" onclick={() => { showApp = false; suggestions = []; industry = ''; step = 1; }} onkeydown={(e) => e.key === 'Enter' && (showApp = false)} role="button" tabindex="0">
-					<span class="text-lg font-bold text-slate-900 tracking-tight">BrandPixy</span>
+					<span class="text-lg font-bold text-slate-900 dark:text-white tracking-tight">BrandPixy</span>
 				</div>
 				
 				{#if step < 4}
-					<div class="hidden sm:flex items-center gap-2 text-xs font-medium text-slate-500 bg-slate-100 px-3 py-1.5 rounded-full">
-						<span class="{step >= 1 ? 'text-indigo-600' : ''}">1. Industry</span>
-						<span class="text-slate-300">/</span>
-						<span class="{step >= 2 ? 'text-indigo-600' : ''}">2. Vibe</span>
-						<span class="text-slate-300">/</span>
-						<span class="{step >= 3 ? 'text-indigo-600' : ''}">3. Values</span>
+					<div class="hidden sm:flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 px-3 py-1.5 rounded-full">
+						<span class="{step >= 1 ? 'text-brand-purple dark:text-brand-sky' : ''}">1. Industry</span>
+						<span class="text-slate-300 dark:text-slate-600">/</span>
+						<span class="{step >= 2 ? 'text-brand-purple dark:text-brand-sky' : ''}">2. Vibe</span>
+						<span class="text-slate-300 dark:text-slate-600">/</span>
+						<span class="{step >= 3 ? 'text-brand-purple dark:text-brand-sky' : ''}">3. Values</span>
 					</div>
 				{:else}
 					<button 
-						class="text-sm font-medium text-slate-600 hover:text-indigo-600 transition-colors"
+						class="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-brand-purple dark:hover:text-brand-cyan transition-colors"
 						onclick={() => { step = 1; suggestions = []; }}
 					>
 						Start Over
@@ -375,29 +375,38 @@
 			
 			{#if step < 4}
 				<div class="max-w-2xl mx-auto">
-					<!-- Progress Bar -->
-					<div class="h-1 w-full bg-slate-100 rounded-full mb-12 overflow-hidden">
-						<div class="h-full bg-indigo-600 transition-all duration-500 ease-out" style="width: {(step / 3) * 100}%"></div>
+					<!-- Enhanced Progress Bar with Indicator -->
+					<div class="mb-12">
+						<div class="h-1.5 w-full bg-slate-200 dark:bg-slate-700 rounded-full mb-4 overflow-hidden">
+							<div class="h-full bg-gradient-to-r from-brand-purple to-brand-blue transition-all duration-500 ease-out shadow-lg shadow-brand-purple/50" style="width: {(step / 3) * 100}%"></div>
+						</div>
+						<div class="flex justify-between text-xs font-semibold text-slate-600 dark:text-slate-400">
+							<span class="{step >= 1 ? 'text-brand-purple dark:text-brand-sky' : ''}">Step {Math.min(step, 3)} of 3</span>
+							<span>{Math.round((step / 3) * 100)}%</span>
+						</div>
 					</div>
 
 					<!-- Step 1: Industry -->
 					{#if step === 1}
 						<div in:fly={{ x: 20, duration: 300, delay: 100 }} out:fade class="space-y-6">
-							<div class="text-center mb-10">
-								<h2 class="text-3xl font-bold text-slate-900 mb-3">What's your industry?</h2>
-								<p class="text-slate-500">Tell us what kind of business you're building.</p>
+							<div class="text-center mb-12">
+								<div class="inline-block mb-4 px-4 py-2 bg-brand-purple/10 dark:bg-brand-purple/20 border border-brand-purple/30 rounded-full">
+									<span class="text-xs font-bold text-brand-purple dark:text-brand-sky uppercase tracking-widest">Step 1</span>
+								</div>
+								<h2 class="text-4xl font-bold text-slate-900 dark:text-white mb-3 animate-fade-in-up">What's your industry?</h2>
+								<p class="text-slate-500 dark:text-slate-400 text-lg">Tell us what kind of business you're building.</p>
 							</div>
 							
-							<div class="relative">
+							<div class="relative group">
 								<input 
 									type="text" 
 									bind:value={industry}
 									placeholder="e.g. Coffee Shop, AI Startup, Fashion Brand..."
-									class="w-full px-6 py-4 text-lg rounded-2xl border-2 border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 outline-none transition-all shadow-sm"
+									class="w-full px-6 py-4 text-lg rounded-2xl border-2 border-slate-200 dark:border-slate-600 dark:bg-slate-800 dark:text-white focus:border-brand-purple dark:focus:border-brand-cyan focus:ring-4 focus:ring-brand-purple/10 dark:focus:ring-brand-purple/20 outline-none transition-all shadow-sm hover:border-slate-300 dark:hover:border-slate-500"
 									onkeydown={(e) => e.key === 'Enter' && industry && nextStep()}
 								/>
 								<button 
-									class="absolute right-3 top-3 bottom-3 px-6 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 disabled:opacity-50 disabled:hover:bg-indigo-600 transition-colors"
+									class="absolute right-3 top-3 bottom-3 px-6 bg-gradient-to-r from-brand-purple to-brand-blue text-white rounded-xl font-medium hover:shadow-lg hover:shadow-brand-purple/50 hover:-translate-y-0.5 disabled:opacity-50 disabled:hover:bg-gradient-to-r disabled:hover:from-brand-purple disabled:hover:to-brand-blue disabled:hover:shadow-none disabled:hover:translate-y-0 transition-all"
 									disabled={!industry}
 									onclick={nextStep}
 								>
@@ -405,10 +414,10 @@
 								</button>
 							</div>
 
-							<div class="flex flex-wrap gap-2 justify-center mt-8">
+							<div class="flex flex-wrap gap-2 justify-center mt-10">
 								{#each ['Tech', 'Food', 'Fashion', 'Health', 'Finance', 'Education'] as hint}
 									<button 
-										class="px-4 py-2 bg-white border border-slate-200 rounded-full text-sm font-medium text-slate-600 hover:border-indigo-300 hover:text-indigo-600 hover:bg-indigo-50 transition-all"
+										class="px-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full text-sm font-medium text-slate-600 dark:text-slate-300 hover:border-brand-purple dark:hover:border-brand-cyan hover:text-brand-purple dark:hover:text-brand-cyan hover:bg-brand-purple/5 dark:hover:bg-brand-purple/10 transition-all hover:shadow-md"
 										onclick={() => { industry = hint; nextStep(); }}
 									>
 										{hint}
@@ -421,26 +430,30 @@
 					<!-- Step 2: Vibe -->
 					{#if step === 2}
 						<div in:fly={{ x: 20, duration: 300, delay: 100 }} out:fade class="space-y-6">
-							<div class="text-center mb-10">
-								<h2 class="text-3xl font-bold text-slate-900 mb-3">Choose your vibe</h2>
-								<p class="text-slate-500">How should your brand feel to customers?</p>
+							<div class="text-center mb-12">
+								<div class="inline-block mb-4 px-4 py-2 bg-brand-blue/10 dark:bg-brand-blue/20 border border-brand-blue/30 rounded-full">
+									<span class="text-xs font-bold text-brand-blue dark:text-brand-cyan uppercase tracking-widest">Step 2</span>
+								</div>
+								<h2 class="text-4xl font-bold text-slate-900 dark:text-white mb-3 animate-fade-in-up">Choose your vibe</h2>
+								<p class="text-slate-500 dark:text-slate-400 text-lg">How should your brand feel to customers?</p>
 							</div>
 
 							<div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-								{#each vibes as v}
+								{#each vibes as v, idx}
 									<button 
-										class="p-4 rounded-2xl border-2 text-left transition-all duration-200 hover:-translate-y-1 {vibe === v.id ? 'border-indigo-600 bg-indigo-50 ring-2 ring-indigo-600/20' : 'border-slate-200 bg-white hover:border-indigo-300 hover:shadow-md'}"
+										class="p-4 rounded-2xl border-2 text-left transition-all duration-200 hover:-translate-y-1 group {vibe === v.id ? 'border-brand-purple dark:border-brand-cyan bg-brand-purple/10 dark:bg-brand-purple/20 ring-2 ring-brand-purple/20 dark:ring-brand-cyan/20 shadow-lg shadow-brand-purple/30' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-brand-purple dark:hover:border-brand-cyan hover:shadow-md dark:hover:shadow-lg dark:hover:shadow-slate-700'}"
 										onclick={() => { vibe = v.id; nextStep(); }}
+										in:fly={{ x: -20, delay: idx * 50, duration: 300 }}
 									>
-										<div class="text-3xl mb-3">{v.emoji}</div>
-										<div class="font-bold text-slate-900 mb-1">{v.id}</div>
-										<div class="text-xs text-slate-500 leading-tight">{v.desc}</div>
+										<div class="text-4xl mb-3 group-hover:scale-125 transition-transform">{v.emoji}</div>
+										<div class="font-bold text-slate-900 dark:text-white mb-1">{v.id}</div>
+										<div class="text-xs text-slate-500 dark:text-slate-400 leading-tight">{v.desc}</div>
 									</button>
 								{/each}
 							</div>
 
 							<div class="flex justify-between mt-8">
-								<button class="text-slate-400 hover:text-slate-600 font-medium px-4 py-2" onclick={prevStep}>Back</button>
+								<button class="text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 font-medium px-4 py-2 transition-colors" onclick={prevStep}>← Back</button>
 							</div>
 						</div>
 					{/if}
@@ -448,25 +461,28 @@
 					<!-- Step 3: Values -->
 					{#if step === 3}
 						<div in:fly={{ x: 20, duration: 300, delay: 100 }} out:fade class="space-y-6">
-							<div class="text-center mb-10">
-								<h2 class="text-3xl font-bold text-slate-900 mb-3">Core Values</h2>
-								<p class="text-slate-500">What does your brand stand for? (Optional)</p>
+							<div class="text-center mb-12">
+								<div class="inline-block mb-4 px-4 py-2 bg-brand-cyan/10 dark:bg-brand-cyan/20 border border-brand-cyan/30 rounded-full">
+									<span class="text-xs font-bold text-brand-cyan dark:text-brand-sky uppercase tracking-widest">Step 3</span>
+								</div>
+								<h2 class="text-4xl font-bold text-slate-900 dark:text-white mb-3 animate-fade-in-up">Core Values</h2>
+								<p class="text-slate-500 dark:text-slate-400 text-lg">What does your brand stand for? (Optional)</p>
 							</div>
 
-							<div class="relative">
+							<div class="relative group">
 								<input 
 									type="text" 
 									bind:value={values}
 									placeholder="e.g. Sustainability, Speed, Trust..."
-									class="w-full px-6 py-4 text-lg rounded-2xl border-2 border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 outline-none transition-all shadow-sm"
+									class="w-full px-6 py-4 text-lg rounded-2xl border-2 border-slate-200 dark:border-slate-600 dark:bg-slate-800 dark:text-white focus:border-brand-cyan dark:focus:border-brand-sky focus:ring-4 focus:ring-brand-cyan/10 dark:focus:ring-brand-cyan/20 outline-none transition-all shadow-sm hover:border-slate-300 dark:hover:border-slate-500"
 									onkeydown={(e) => e.key === 'Enter' && submit()}
 								/>
 							</div>
 
-							<div class="flex justify-between items-center mt-8">
-								<button class="text-slate-400 hover:text-slate-600 font-medium px-4 py-2" onclick={prevStep}>Back</button>
+							<div class="flex justify-between items-center mt-10">
+								<button class="text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 font-medium px-4 py-2 transition-colors" onclick={prevStep}>← Back</button>
 								<button 
-									class="px-8 py-4 bg-indigo-600 text-white text-lg font-bold rounded-xl shadow-lg hover:bg-indigo-700 hover:shadow-xl hover:-translate-y-1 transition-all flex items-center gap-2"
+									class="px-8 py-4 bg-gradient-to-r from-brand-purple to-brand-blue text-white text-lg font-bold rounded-xl shadow-lg hover:shadow-xl hover:shadow-brand-purple/50 hover:-translate-y-1 transition-all flex items-center gap-2 disabled:opacity-50 disabled:hover:shadow-lg disabled:hover:translate-y-0"
 									onclick={submit}
 									disabled={loading}
 								>
@@ -475,7 +491,7 @@
 											<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
 											<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
 										</svg>
-										Generating...
+										Generating Brand...
 									{:else}
 										Generate Brand
 										<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
@@ -488,55 +504,61 @@
 			{:else}
 				<!-- Results Section -->
 				<div in:fade={{ duration: 500 }}>
-					<div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+					<div class="flex flex-col md:flex-row justify-between items-center mb-12 gap-4">
 						<div>
-							<h2 class="text-2xl font-bold text-slate-900">Your Brand Identity Options</h2>
-							<p class="text-slate-500">Generated for <span class="font-medium text-indigo-600">{industry}</span> • {vibe} Vibe</p>
+							<h2 class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-2">Your Brand Identity Options</h2>
+							<p class="text-slate-500 dark:text-slate-400">Generated for <span class="font-bold text-brand-purple dark:text-brand-cyan">{industry}</span> • {vibe} Vibe</p>
 						</div>
 						<button 
-							class="px-6 py-2 bg-white border border-slate-200 text-slate-600 font-medium rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
+							class="px-6 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-medium rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 hover:border-brand-purple dark:hover:border-brand-cyan transition-all cursor-pointer shadow-sm"
 							onclick={() => { step = 1; suggestions = []; }}
 						>
-							Start Over
+							← Start Over
 						</button>
 					</div>
 
 					{#if loading}
-						<div class="flex flex-col items-center justify-center py-20">
-							<div class="w-16 h-16 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin mb-6"></div>
-							<p class="text-lg text-slate-600 font-medium">Brewing some magic...</p>
+						<div class="flex flex-col items-center justify-center py-32">
+							<div class="relative w-20 h-20 mb-8">
+								<div class="absolute inset-0 bg-gradient-to-r from-brand-purple to-brand-blue rounded-full animate-spin blur-sm"></div>
+								<div class="absolute inset-2 bg-white dark:bg-slate-950 rounded-full flex items-center justify-center">
+									<div class="text-3xl animate-bounce">✨</div>
+								</div>
+							</div>
+							<p class="text-xl text-slate-600 dark:text-slate-300 font-semibold">Brewing some magic...</p>
+							<p class="text-sm text-slate-500 dark:text-slate-400 mt-2">This usually takes 10-20 seconds</p>
 						</div>
 					{:else}
 						<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
 							{#each suggestions as s, i}
-								<div class="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden group flex flex-col" in:fade={{ delay: i * 50, duration: 300 }}>
+								<div class="group bg-white dark:bg-slate-800 rounded-3xl border-2 border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-2xl hover:shadow-brand-purple/20 dark:hover:shadow-brand-purple/30 hover:-translate-y-2 transition-all duration-300 overflow-hidden flex flex-col" in:fade={{ delay: i * 50, duration: 400 }}>
 									<!-- Logo Area -->
-									<div class="p-8 flex-1 flex flex-col items-center text-center relative bg-slate-50/50 group-hover:bg-white transition-colors">
-										<div class="w-full aspect-square flex items-center justify-center mb-4 relative">
+									<div class="p-8 flex-1 flex flex-col items-center text-center relative bg-gradient-to-b from-slate-50/50 dark:from-slate-700/30 to-transparent group-hover:from-brand-purple/5 dark:group-hover:from-brand-purple/10 transition-colors">
+										<div class="w-full aspect-square flex items-center justify-center mb-6 relative">
 											{#if s.logoUrl}
-												<img src={s.logoUrl} alt="{s.name} logo" class="w-full h-full object-contain drop-shadow-md" in:fade />
+												<img src={s.logoUrl} alt="{s.name} logo" class="w-4/5 h-4/5 object-contain drop-shadow-lg group-hover:drop-shadow-xl group-hover:scale-110 transition-all duration-300" in:fade />
 											{:else}
-												<div class="w-full h-full transform transition-transform duration-500 group-hover:scale-110 drop-shadow-sm flex items-center justify-center">
+												<div class="w-4/5 h-4/5 transform transition-transform duration-500 group-hover:scale-125 drop-shadow-sm flex items-center justify-center">
 													{@html s.svg}
 												</div>
 											{/if}
 										</div>
-										<h3 class="text-2xl font-black text-slate-900 mb-2 tracking-tight">{s.name}</h3>
-										<p class="text-sm text-slate-500 leading-relaxed font-medium">{s.tagline}</p>
+										<h3 class="text-2xl font-black text-slate-900 dark:text-white mb-2 tracking-tight leading-tight">{s.name}</h3>
+										<p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-medium line-clamp-2">{s.tagline}</p>
 									</div>
 
 									<!-- Actions -->
-									<div class="p-4 border-t border-slate-100 bg-slate-50/80 grid grid-cols-1 gap-3">
+									<div class="p-4 border-t border-slate-100 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-700/50 grid grid-cols-1 gap-3">
 										<button 
-											class="py-2.5 px-4 bg-white border border-slate-200 text-slate-700 font-semibold rounded-xl text-sm hover:bg-slate-50 hover:text-indigo-600 hover:border-indigo-200 transition-all flex items-center justify-center gap-2 shadow-sm cursor-pointer"
+											class="py-2.5 px-4 bg-gradient-to-r from-brand-purple to-brand-blue text-white font-semibold rounded-xl text-sm hover:shadow-lg hover:shadow-brand-purple/50 hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2 shadow-md cursor-pointer"
 											onclick={() => downloadLogo(s)}
 										>
 											<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-											Download Logo
+											Download
 										</button>
 										{#if s.generating}
-											<div class="text-xs text-center text-indigo-600 font-medium animate-pulse">
-												Generating AI Logo...
+											<div class="text-xs text-center text-brand-purple dark:text-brand-cyan font-medium animate-pulse">
+												✨ Generating AI Logo...
 											</div>
 										{/if}
 									</div>
@@ -544,19 +566,19 @@
 							{/each}
 
 							<!-- Unlock Full Brand Identity Card -->
-							<div class="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-2xl shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 overflow-hidden group flex flex-col items-center justify-center text-center p-6 text-white cursor-pointer" 
-								in:fade={{ delay: suggestions.length * 50, duration: 300 }}
+							<div class="bg-gradient-to-br from-brand-purple to-brand-blue rounded-3xl shadow-xl hover:shadow-2xl hover:shadow-brand-purple/40 hover:-translate-y-2 transition-all duration-300 overflow-hidden group flex flex-col items-center justify-center text-center p-6 text-white cursor-pointer" 
+								in:fade={{ delay: suggestions.length * 50, duration: 400 }}
 								onclick={() => showUnlockModal = true}
 								onkeydown={(e) => e.key === 'Enter' && (showUnlockModal = true)}
 								role="button"
 								tabindex="0"
 							>
-								<div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mb-4 backdrop-blur-sm group-hover:scale-110 transition-transform">
-									<svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+								<div class="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center mb-4 backdrop-blur-md group-hover:scale-110 transition-transform">
+									<svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
 								</div>
 								<h3 class="text-xl font-bold mb-2">Unlock Full Brand</h3>
-								<p class="text-indigo-100 mb-4 text-xs">Get social media kits, business cards, and brand guidelines.</p>
-								<button class="px-4 py-2 bg-white text-indigo-600 text-sm font-bold rounded-lg hover:bg-indigo-50 transition-colors w-full">
+								<p class="text-white/80 mb-5 text-sm leading-relaxed">Get social media kits, business cards, and brand guidelines instantly.</p>
+								<button class="px-5 py-2.5 bg-white text-brand-purple text-sm font-bold rounded-lg hover:bg-slate-100 transition-all hover:shadow-lg w-full transition-transform duration-200 group-hover:scale-105">
 									Unlock Now
 								</button>
 							</div>
@@ -571,57 +593,57 @@
 {#if showUnlockModal}
 	<div class="fixed inset-0 z-[100] flex items-center justify-center p-4" in:fade={{ duration: 200 }}>
 		<!-- Backdrop -->
-		<div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick={() => showUnlockModal = false} onkeydown={(e) => e.key === 'Escape' && (showUnlockModal = false)} role="button" tabindex="0" aria-label="Close modal"></div>
+		<div class="absolute inset-0 bg-slate-900/60 dark:bg-slate-900/80 backdrop-blur-sm" onclick={() => showUnlockModal = false} onkeydown={(e) => e.key === 'Escape' && (showUnlockModal = false)} role="button" tabindex="0" aria-label="Close modal"></div>
 		
 		<!-- Modal Content -->
-		<div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg relative z-10 overflow-hidden" in:fly={{ y: 20, duration: 300 }}>
-			<div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-8 text-white text-center relative overflow-hidden">
-				<div class="absolute top-0 left-0 w-full h-full bg-[url('/grid.svg')] opacity-20"></div>
-				<button class="absolute top-4 right-4 text-white/70 hover:text-white transition-colors" onclick={() => showUnlockModal = false} aria-label="Close">
+		<div class="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl dark:shadow-2xl w-full max-w-lg relative z-10 overflow-hidden" in:fly={{ y: 20, duration: 300 }}>
+			<div class="bg-gradient-to-r from-brand-purple to-brand-blue p-8 text-white text-center relative overflow-hidden">
+				<div class="absolute top-0 left-0 w-full h-full bg-[url('/grid.svg')] opacity-10"></div>
+				<button class="absolute top-4 right-4 text-white/70 hover:text-white hover:bg-white/10 rounded-full p-2 transition-colors" onclick={() => showUnlockModal = false} aria-label="Close">
 					<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
 				</button>
 				<div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4 backdrop-blur-md">
 					<span class="text-3xl">💎</span>
 				</div>
 				<h2 class="text-3xl font-bold mb-2">Unlock Full Brand Kit</h2>
-				<p class="text-indigo-100">Take your brand to the next level.</p>
+				<p class="text-brand-sky">Take your brand to the next level.</p>
 			</div>
 			
 			<div class="p-8">
 				<div class="space-y-4 mb-8">
-					<div class="flex items-center gap-4 p-4 rounded-xl bg-slate-50 border border-slate-100">
-						<div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
+					<div class="flex items-center gap-4 p-4 rounded-xl bg-brand-purple/5 dark:bg-brand-purple/10 border border-brand-purple/20 dark:border-brand-purple/30">
+						<div class="w-10 h-10 rounded-full bg-brand-purple/20 flex items-center justify-center text-brand-purple">
 							<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
 						</div>
 						<div>
-							<h4 class="font-bold text-slate-900">Social Media Kit</h4>
-							<p class="text-sm text-slate-500">Profile pics, covers, and post templates.</p>
+							<h4 class="font-bold text-slate-900 dark:text-white">Social Media Kit</h4>
+							<p class="text-sm text-slate-500 dark:text-slate-400">Profile pics, covers, and post templates.</p>
 						</div>
 					</div>
-					<div class="flex items-center gap-4 p-4 rounded-xl bg-slate-50 border border-slate-100">
-						<div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-600">
+					<div class="flex items-center gap-4 p-4 rounded-xl bg-brand-blue/5 dark:bg-brand-blue/10 border border-brand-blue/20 dark:border-brand-blue/30">
+						<div class="w-10 h-10 rounded-full bg-brand-blue/20 flex items-center justify-center text-brand-blue">
 							<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0c0 .884-.896 1.75-2.167 2.5h4.333c-1.27-.75-2.167-1.616-2.167-2.5z"/></svg>
 						</div>
 						<div>
-							<h4 class="font-bold text-slate-900">Business Cards</h4>
-							<p class="text-sm text-slate-500">Print-ready designs for your team.</p>
+							<h4 class="font-bold text-slate-900 dark:text-white">Business Cards</h4>
+							<p class="text-sm text-slate-500 dark:text-slate-400">Print-ready designs for your team.</p>
 						</div>
 					</div>
-					<div class="flex items-center gap-4 p-4 rounded-xl bg-slate-50 border border-slate-100">
-						<div class="w-10 h-10 rounded-full bg-pink-100 flex items-center justify-center text-pink-600">
+					<div class="flex items-center gap-4 p-4 rounded-xl bg-brand-cyan/5 dark:bg-brand-cyan/10 border border-brand-cyan/20 dark:border-brand-cyan/30">
+						<div class="w-10 h-10 rounded-full bg-brand-cyan/20 flex items-center justify-center text-brand-cyan">
 							<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
 						</div>
 						<div>
-							<h4 class="font-bold text-slate-900">Brand Guidelines</h4>
-							<p class="text-sm text-slate-500">Fonts, colors, and usage rules.</p>
+							<h4 class="font-bold text-slate-900 dark:text-white">Brand Guidelines</h4>
+							<p class="text-sm text-slate-500 dark:text-slate-400">Fonts, colors, and usage rules.</p>
 						</div>
 					</div>
 				</div>
 				
-				<button class="w-full py-4 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1">
+				<button class="w-full py-4 bg-gradient-to-r from-brand-purple to-brand-blue text-white font-bold rounded-xl hover:shadow-lg hover:shadow-brand-purple/50 transition-all shadow-md hover:-translate-y-0.5">
 					Get Full Access - $29
 				</button>
-				<p class="text-center text-xs text-slate-400 mt-4">One-time payment. Lifetime access.</p>
+				<p class="text-center text-xs text-slate-500 dark:text-slate-400 mt-4">One-time payment. Lifetime access.</p>
 			</div>
 		</div>
 	</div>
