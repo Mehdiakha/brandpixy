@@ -91,6 +91,7 @@ async def generate_logo_image(name: str, vibe: str) -> str:
     if not client:
         return ""
 
+    # Enhanced prompt for better logo quality
     prompt = f"A professional, high-quality logo design for a brand named '{name}'. Industry vibe: {vibe}. Vector style, flat design, minimal, white background, high resolution."
     
     try:
