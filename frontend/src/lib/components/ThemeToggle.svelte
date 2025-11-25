@@ -18,18 +18,19 @@
 		isDark = !isDark;
 		if (isDark) {
 			document.documentElement.classList.add('dark');
-			localStorage.theme = 'dark';
+			localStorage.setItem('theme', 'dark');
 		} else {
 			document.documentElement.classList.remove('dark');
-			localStorage.theme = 'light';
+			localStorage.setItem('theme', 'light');
 		}
 	}
 </script>
 
 <button 
 	onclick={toggleTheme}
-	class="p-2 rounded-full transition-colors hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300"
+	class="p-2 rounded-full transition-colors hover:bg-slate-100 text-slate-600 hover:text-slate-900"
 	aria-label="Toggle Dark Mode"
+	title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
 >
 	{#if isDark}
 		<!-- Sun Icon -->

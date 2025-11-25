@@ -1,6 +1,29 @@
 @import "tailwindcss";
 
-body {
-    font-family: 'Inter', sans-serif;
-    background-color: #f8f7ff;
+* {
+    @apply transition-colors duration-200;
 }
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background-color: #ffffff;
+    color: #1f2937;
+}
+
+/* Light theme (default) */
+:root {
+    --color-primary: #4f46e5; /* Indigo */
+    --color-secondary: #9333ea; /* Purple */
+    --color-accent: #ec4899; /* Pink */
+}
+
+/* Smooth color transitions */
+button, a, input {
+    @apply transition-all duration-200;
+}
+
+/* Focus states for accessibility */
+button:focus-visible, a:focus-visible {
+    @apply outline-offset-2 outline-2 outline-indigo-600;
+}
+

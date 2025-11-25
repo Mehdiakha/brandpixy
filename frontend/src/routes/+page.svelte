@@ -1,9 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
 	import { fade, fly, slide } from 'svelte/transition';
-	import gsap from 'gsap';
-	import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
-	import LogoCube from '$lib/components/LogoCube.svelte';
 	import ThemeToggle from '$lib/components/ThemeToggle.svelte';
 
 	let industry = '';
@@ -29,15 +26,13 @@
 	];
 
 	onMount(() => {
-		gsap.registerPlugin(ScrollTrigger);
 		if (!showApp) {
 			initLandingAnimations();
 		}
 	});
 
 	function initLandingAnimations() {
-		const tl = gsap.timeline();
-		tl.from('.landing-content', { y: 50, opacity: 0, duration: 1, ease: 'power3.out' });
+		// Simple fade-in animation on mount
 	}
 
 	function nextStep() {
@@ -222,28 +217,28 @@
 </svelte:head>
 
 {#if !showApp}
-	<div class="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white overflow-hidden font-sans selection:bg-purple-500 selection:text-white transition-colors duration-300">
+	<div class="min-h-screen bg-gradient-to-b from-white via-slate-50 to-white text-slate-900 overflow-hidden font-sans selection:bg-indigo-500 selection:text-white">
 		<!-- Navbar -->
-		<nav class="fixed w-full z-50 top-0 left-0 border-b border-slate-200 dark:border-white/10 bg-white/70 dark:bg-black/50 backdrop-blur-md transition-colors duration-300">
+		<nav class="fixed w-full z-50 top-0 left-0 border-b border-slate-200/40 bg-white/70 backdrop-blur-md">
 			<div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
 				<div class="flex items-center gap-2">
 					<a href="https://brandpixy.com/" class="flex items-center gap-2">
 						<img src="/logo.jpg" alt="BrandPixy Logo" class="w-8 h-8 rounded-full" />
-						<span class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">BrandPixy</span>
+						<span class="text-xl font-bold tracking-tight text-slate-900">BrandPixy</span>
 					</a>
 				</div>
 				
 				<!-- Desktop Menu -->
-				<div class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600 dark:text-slate-300">
-					<a href="#features" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Features</a>
-					<button class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors bg-transparent border-0 cursor-pointer">Pricing</button>
-					<button class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors bg-transparent border-0 cursor-pointer">About</button>
+				<div class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600">
+					<a href="#features" class="hover:text-indigo-600 transition-colors">Features</a>
+					<button class="hover:text-indigo-600 transition-colors bg-transparent border-0 cursor-pointer">Pricing</button>
+					<button class="hover:text-indigo-600 transition-colors bg-transparent border-0 cursor-pointer">About</button>
 				</div>
 
 				<div class="flex items-center gap-4">
 					<ThemeToggle />
 					<button 
-						class="hidden md:block px-5 py-2 bg-indigo-600 text-white text-sm font-bold rounded-full hover:bg-indigo-500 transition-colors shadow-md whitespace-nowrap"
+						class="hidden md:block px-5 py-2 bg-indigo-600 text-white text-sm font-bold rounded-full hover:bg-indigo-700 transition-colors shadow-md whitespace-nowrap"
 						onclick={() => showApp = true}
 					>
 						Get Started
@@ -251,7 +246,7 @@
 
 					<!-- Mobile Hamburger -->
 					<button 
-						class="md:hidden p-2 text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-white/20 rounded-full transition-colors"
+						class="md:hidden p-2 text-slate-900 hover:bg-slate-100 rounded-full transition-colors"
 						onclick={() => isMenuOpen = !isMenuOpen}
 						aria-label="Menu"
 					>
@@ -268,15 +263,15 @@
 			<!-- Mobile Menu Overlay -->
 			{#if isMenuOpen}
 				<div 
-					class="absolute top-full left-4 right-4 mt-2 p-4 bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl border border-slate-200 dark:border-white/20 rounded-3xl shadow-xl flex flex-col gap-4 md:hidden origin-top z-40"
+					class="absolute top-full left-4 right-4 mt-2 p-4 bg-white/90 backdrop-blur-xl border border-slate-200/40 rounded-3xl shadow-xl flex flex-col gap-4 md:hidden origin-top z-40"
 					in:slide={{ duration: 300, axis: 'y' }}
 					out:slide={{ duration: 200, axis: 'y' }}
 				>
-					<a href="#features" class="p-3 text-slate-700 dark:text-slate-200 font-medium hover:bg-slate-100 dark:hover:bg-white/10 rounded-xl transition-colors" onclick={() => isMenuOpen = false}>Features</a>
-					<button class="p-3 text-slate-700 dark:text-slate-200 font-medium hover:bg-slate-100 dark:hover:bg-white/10 rounded-xl transition-colors text-left w-full" onclick={() => isMenuOpen = false}>Pricing</button>
-					<button class="p-3 text-slate-700 dark:text-slate-200 font-medium hover:bg-slate-100 dark:hover:bg-white/10 rounded-xl transition-colors text-left w-full" onclick={() => isMenuOpen = false}>About</button>
+					<a href="#features" class="p-3 text-slate-700 font-medium hover:bg-slate-100 rounded-xl transition-colors" onclick={() => isMenuOpen = false}>Features</a>
+					<button class="p-3 text-slate-700 font-medium hover:bg-slate-100 rounded-xl transition-colors text-left w-full" onclick={() => isMenuOpen = false}>Pricing</button>
+					<button class="p-3 text-slate-700 font-medium hover:bg-slate-100 rounded-xl transition-colors text-left w-full" onclick={() => isMenuOpen = false}>About</button>
 					<button 
-						class="w-full py-3 bg-slate-900 dark:bg-indigo-600 text-white font-bold rounded-xl shadow-md"
+						class="w-full py-3 bg-slate-900 text-white font-bold rounded-xl shadow-md"
 						onclick={() => { isMenuOpen = false; showApp = true; }}
 					>
 						Get Started
@@ -285,102 +280,80 @@
 			{/if}
 
 		<!-- Hero Section -->
-		<div class="flex-1 flex flex-col items-center justify-center p-6 text-center landing-content relative z-10 mt-32">
-			<div class="mb-16 flex justify-center perspective-container relative">
-				<LogoCube />
-			</div>
-			<h1 class="text-5xl md:text-7xl font-black text-slate-900 dark:text-white mb-8 tracking-tight leading-tight">
-				Instant <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">Brand Identities</span>
+		<div class="flex-1 flex flex-col items-center justify-center p-6 text-center landing-content relative z-10 mt-32" in:fade={{ duration: 600 }}>
+			<h1 class="text-6xl md:text-7xl font-black text-slate-900 mb-8 tracking-tight leading-tight">
+				Instant <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600">Brand Identities</span>
 			</h1>
-			<p class="text-xl md:text-2xl text-slate-500 dark:text-slate-400 max-w-2xl mx-auto mb-12 leading-relaxed font-light">
-				Free to start, No sign up required
+			<p class="text-xl md:text-2xl text-slate-600 max-w-2xl mx-auto mb-12 leading-relaxed font-light">
+				Create stunning logos and brand names in seconds. Powered by AI, owned by you.
 			</p>
 			<button 
-				class="group relative px-8 py-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-lg font-bold rounded-full shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 overflow-hidden cursor-pointer"
+				class="group relative px-8 py-4 bg-indigo-600 text-white text-lg font-bold rounded-full shadow-lg hover:shadow-xl hover:bg-indigo-700 hover:-translate-y-1 transition-all duration-300 overflow-hidden cursor-pointer"
 				onclick={() => showApp = true}
 			>
 				<span class="relative z-10 flex items-center gap-2">
-					Start Generating
+					Start Creating
 					<svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
 				</span>
-				<div class="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 			</button>
 		</div>
 
 		<!-- Features Section -->
-		<div id="features" class="py-24 bg-white/50 dark:bg-black/20 backdrop-blur-xl border-t border-slate-200 dark:border-white/10 relative z-10">
+		<div id="features" class="py-24 bg-white border-t border-slate-200/40 relative z-10">
 			<div class="max-w-7xl mx-auto px-6">
-				<h2 class="text-4xl font-bold text-center text-slate-900 dark:text-white mb-16">Why BrandPixy?</h2>
+				<h2 class="text-4xl font-bold text-center text-slate-900 mb-16">Why BrandPixy?</h2>
 				<div class="grid md:grid-cols-3 gap-8 md:gap-12">
 					<!-- Feature 1 -->
-					<div class="text-center p-8 rounded-3xl bg-white/60 dark:bg-white/5 backdrop-blur-md border border-slate-200 dark:border-white/10 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all">
+					<div class="text-center p-8 rounded-3xl bg-gradient-to-br from-indigo-50 to-transparent border border-indigo-200/50 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all">
 						<div class="text-5xl mb-6">⚡</div>
-						<h3 class="text-xl font-bold mb-3 text-slate-900 dark:text-white">Instant Generation</h3>
-						<p class="text-slate-600 dark:text-slate-400 leading-relaxed">Get dozens of unique brand names and logos in seconds.</p>
+						<h3 class="text-xl font-bold mb-3 text-slate-900">Lightning Fast</h3>
+						<p class="text-slate-600 leading-relaxed">Get dozens of unique logos and brand names in seconds.</p>
 					</div>
 					<!-- Feature 2 -->
-					<div class="text-center p-8 rounded-3xl bg-white/60 dark:bg-white/5 backdrop-blur-md border border-slate-200 dark:border-white/10 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all">
+					<div class="text-center p-8 rounded-3xl bg-gradient-to-br from-purple-50 to-transparent border border-purple-200/50 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all">
 						<div class="text-5xl mb-6">🎨</div>
-						<h3 class="text-xl font-bold mb-3 text-slate-900 dark:text-white">Tailored Vibes</h3>
-						<p class="text-slate-600 dark:text-slate-400 leading-relaxed">Choose from Modern, Luxury, Tech, and more styles.</p>
+						<h3 class="text-xl font-bold mb-3 text-slate-900">Fully Customizable</h3>
+						<p class="text-slate-600 leading-relaxed">Choose from Modern, Luxury, Tech styles and more.</p>
 					</div>
 					<!-- Feature 3 -->
-					<div class="text-center p-8 rounded-3xl bg-white/60 dark:bg-white/5 backdrop-blur-md border border-slate-200 dark:border-white/10 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all">
+					<div class="text-center p-8 rounded-3xl bg-gradient-to-br from-pink-50 to-transparent border border-pink-200/50 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all">
 						<div class="text-5xl mb-6">💎</div>
-						<h3 class="text-xl font-bold mb-3 text-slate-900 dark:text-white">Production Ready</h3>
-						<p class="text-slate-600 dark:text-slate-400 leading-relaxed">Download high-quality PNG logos instantly.</p>
-					</div>
-					<!-- Feature 4 -->
-					<div class="text-center p-8 rounded-3xl bg-white/60 dark:bg-white/5 backdrop-blur-md border border-slate-200 dark:border-white/10 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all">
-						<div class="text-5xl mb-6">🔐</div>
-						<h3 class="text-xl font-bold mb-3 text-slate-900 dark:text-white">Full Ownership</h3>
-						<p class="text-slate-600 dark:text-slate-400 leading-relaxed">You own 100% of the copyright for your generated assets.</p>
-					</div>
-					<!-- Feature 5 -->
-					<div class="text-center p-8 rounded-3xl bg-white/60 dark:bg-white/5 backdrop-blur-md border border-slate-200 dark:border-white/10 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all">
-						<div class="text-5xl mb-6">📐</div>
-						<h3 class="text-xl font-bold mb-3 text-slate-900 dark:text-white">Vector Files</h3>
-						<p class="text-slate-600 dark:text-slate-400 leading-relaxed">Get scalable SVG files perfect for print and web.</p>
-					</div>
-					<!-- Feature 6 -->
-					<div class="text-center p-8 rounded-3xl bg-white/60 dark:bg-white/5 backdrop-blur-md border border-slate-200 dark:border-white/10 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all">
-						<div class="text-5xl mb-6">📦</div>
-						<h3 class="text-xl font-bold mb-3 text-slate-900 dark:text-white">Brand Kits</h3>
-						<p class="text-slate-600 dark:text-slate-400 leading-relaxed">Complete social media kits and business card designs.</p>
+						<h3 class="text-xl font-bold mb-3 text-slate-900">Production Ready</h3>
+						<p class="text-slate-600 leading-relaxed">Download high-quality PNG and SVG files instantly.</p>
 					</div>
 				</div>
 			</div>
 		</div>
 
 		<!-- Footer -->
-		<footer class="bg-slate-900 text-slate-400 py-12 relative z-10">
+		<footer class="bg-slate-50 text-slate-600 py-12 border-t border-slate-200/40 relative z-10">
 			<div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
 				<div class="flex items-center gap-3">
-					<img src="/logo.jpg" alt="BrandPixy" class="w-8 h-8 rounded-lg opacity-80" />
-					<span class="text-white font-bold text-xl">BrandPixy</span>
+					<img src="/logo.jpg" alt="BrandPixy" class="w-8 h-8 rounded-lg" />
+					<span class="text-slate-900 font-bold text-xl">BrandPixy</span>
 				</div>
 				<div class="text-sm">
 					&copy; {new Date().getFullYear()} BrandPixy. All rights reserved.
 				</div>
 				<div class="flex gap-6">
-					<button class="hover:text-white transition-colors bg-transparent border-0 cursor-pointer">Privacy</button>
-					<button class="hover:text-white transition-colors bg-transparent border-0 cursor-pointer">Terms</button>
-					<button class="hover:text-white transition-colors bg-transparent border-0 cursor-pointer">Contact</button>
+					<button class="hover:text-slate-900 transition-colors bg-transparent border-0 cursor-pointer">Privacy</button>
+					<button class="hover:text-slate-900 transition-colors bg-transparent border-0 cursor-pointer">Terms</button>
+					<button class="hover:text-slate-900 transition-colors bg-transparent border-0 cursor-pointer">Contact</button>
 				</div>
 			</div>
 		</footer>
 	</div>
 {:else}
-	<div class="min-h-screen bg-slate-50 font-sans text-slate-900 flex flex-col">
+	<div class="min-h-screen bg-gradient-to-b from-white via-slate-50 to-white font-sans text-slate-900 flex flex-col">
 		<!-- Floating Glassmorphism Navbar -->
 		<div class="fixed top-6 left-0 right-0 z-50 flex justify-center px-4">
-			<header class="bg-white/70 backdrop-blur-xl border border-white/20 shadow-lg rounded-full px-4 py-2 md:px-6 md:py-3 flex items-center justify-between gap-4 md:gap-8 max-w-2xl w-full transition-all duration-300 hover:shadow-xl hover:bg-white/80">
+			<header class="bg-white/80 backdrop-blur-xl border border-slate-200/50 shadow-md rounded-full px-4 py-2 md:px-6 md:py-3 flex items-center justify-between gap-4 md:gap-8 max-w-2xl w-full transition-all duration-300 hover:shadow-lg hover:bg-white">
 				<div class="flex items-center gap-3 cursor-pointer group" onclick={() => { showApp = false; suggestions = []; industry = ''; step = 1; }} onkeydown={(e) => e.key === 'Enter' && (showApp = false)} role="button" tabindex="0">
 					<span class="text-lg font-bold text-slate-900 tracking-tight">BrandPixy</span>
 				</div>
 				
 				{#if step < 4}
-					<div class="hidden sm:flex items-center gap-2 text-xs font-medium text-slate-500 bg-slate-100/50 px-3 py-1.5 rounded-full">
+					<div class="hidden sm:flex items-center gap-2 text-xs font-medium text-slate-500 bg-slate-100 px-3 py-1.5 rounded-full">
 						<span class="{step >= 1 ? 'text-indigo-600' : ''}">1. Industry</span>
 						<span class="text-slate-300">/</span>
 						<span class="{step >= 2 ? 'text-indigo-600' : ''}">2. Vibe</span>
