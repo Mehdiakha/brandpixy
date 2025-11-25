@@ -4,6 +4,59 @@
   :root {
     --font-sans: 'Inter', system-ui, sans-serif;
     --font-display: 'Outfit', system-ui, sans-serif;
+
+    /* Light Theme Tokens */
+    --color-brand-50: 239 246 255;
+    --color-brand-100: 219 234 254;
+    --color-brand-200: 191 219 254;
+    --color-brand-300: 147 197 253;
+    --color-brand-400: 96 165 250;
+    --color-brand-500: 59 130 246;
+    --color-brand-600: 37 99 235;
+    --color-brand-700: 29 78 216;
+    --color-brand-800: 30 64 175;
+    --color-brand-900: 30 58 138;
+    --color-brand-950: 23 37 84;
+
+    --color-surface-50: 248 250 252;
+    --color-surface-100: 241 245 249;
+    --color-surface-200: 226 232 240;
+    --color-surface-300: 203 213 225;
+    --color-surface-400: 148 163 184;
+    --color-surface-500: 100 116 139;
+    --color-surface-600: 71 85 105;
+    --color-surface-700: 51 65 85;
+    --color-surface-800: 30 41 59;
+    --color-surface-900: 15 23 42;
+    --color-surface-950: 2 6 23;
+  }
+
+  .dark {
+    /* Dark Theme Tokens - Inverted Surface */
+    --color-surface-50: 2 6 23;
+    /* Was 950 */
+    --color-surface-100: 15 23 42;
+    /* Was 900 */
+    --color-surface-200: 30 41 59;
+    /* Was 800 */
+    --color-surface-300: 51 65 85;
+    /* Was 700 */
+    --color-surface-400: 71 85 105;
+    /* Was 600 */
+    --color-surface-500: 100 116 139;
+    /* Keep mid */
+    --color-surface-600: 148 163 184;
+    /* Was 400 */
+    --color-surface-700: 203 213 225;
+    /* Was 300 */
+    --color-surface-800: 226 232 240;
+    /* Was 200 */
+    --color-surface-900: 241 245 249;
+    /* Was 100 */
+    --color-surface-950: 248 250 252;
+    /* Was 50 */
+
+    /* Adjust brand for dark mode visibility if needed, usually keep same or slight shift */
   }
 
   html {
@@ -14,13 +67,19 @@
 
   body {
     @apply bg-surface-50 text-surface-900 font-sans antialiased;
-    background-image: 
-      radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.05) 0px, transparent 50%),
-      radial-gradient(at 100% 0%, rgba(45, 212, 191, 0.05) 0px, transparent 50%);
+    /* Subtle mesh gradient that adapts to theme */
+    background-image:
+      radial-gradient(at 0% 0%, rgb(var(--color-brand-500) / 0.05) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, rgb(var(--color-brand-400) / 0.05) 0px, transparent 50%);
     background-attachment: fixed;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-display font-bold tracking-tight text-surface-900;
   }
 }
@@ -35,23 +94,23 @@
   }
 
   .btn-secondary {
-    @apply bg-white text-surface-700 hover:bg-surface-50 border border-surface-200 shadow-sm hover:shadow-md;
+    @apply bg-white dark:bg-surface-800 text-surface-900 hover:bg-surface-100 dark:hover:bg-surface-700 border border-surface-200 dark:border-surface-700 shadow-sm hover:shadow-md;
   }
 
   .btn-ghost {
-    @apply text-surface-600 hover:text-surface-900 hover:bg-surface-100;
+    @apply text-surface-600 hover:text-surface-900 hover:bg-surface-100 dark:hover:bg-surface-800;
   }
 
   .card {
-    @apply bg-white rounded-2xl border border-surface-100 shadow-soft-md hover:shadow-soft-lg transition-all duration-300;
+    @apply bg-white dark:bg-surface-900 rounded-2xl border border-surface-200 dark:border-surface-800 shadow-soft-md hover:shadow-soft-lg transition-all duration-300;
   }
 
   .input {
-    @apply w-full px-4 py-3 rounded-xl border border-surface-200 bg-white text-surface-900 placeholder-surface-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 outline-none transition-all duration-200;
+    @apply w-full px-4 py-3 rounded-xl border border-surface-200 dark:border-surface-700 bg-white dark:bg-surface-900 text-surface-900 placeholder-surface-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 outline-none transition-all duration-200;
   }
 
   .glass {
-    @apply bg-white/70 backdrop-blur-lg border border-white/20 shadow-soft-lg;
+    @apply bg-white/70 dark:bg-surface-950/70 backdrop-blur-lg border border-white/20 dark:border-surface-800/30 shadow-soft-lg;
   }
 }
 
@@ -65,5 +124,5 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-surface-300 rounded-full hover:bg-surface-400 transition-colors;
+  @apply bg-surface-300 dark:bg-surface-700 rounded-full hover:bg-surface-400 dark:hover:bg-surface-600 transition-colors;
 }

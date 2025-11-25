@@ -105,11 +105,13 @@
 			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 				<div class="flex justify-between items-center h-20">
 					<div class="flex items-center gap-3">
-						<img
-							src="/logo01.png"
-							alt="BrandPixy"
-							class="w-10 h-10 object-contain"
-						/>
+						<div class="relative w-10 h-10">
+							<img
+								src="/logo01.png"
+								alt="BrandPixy"
+								class="w-full h-full object-contain"
+							/>
+						</div>
 						<span
 							class="text-xl font-display font-bold bg-clip-text text-transparent bg-gradient-to-r from-brand-600 to-brand-400"
 						>
