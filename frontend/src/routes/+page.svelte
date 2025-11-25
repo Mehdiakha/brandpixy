@@ -73,6 +73,9 @@
 
 			step = 4;
 			loading = false;
+			
+			// Automatically generate HQ logos for all suggestions
+			generateAllLogos();
 		} catch (error) {
 			console.error("Submission error details:", error);
 			alert(`Error: ${error.message}. Check console for details.`);
@@ -83,6 +86,49 @@
 	function downloadLogo(item) {
 		// Existing download logic
 		alert(`Downloading ${item.name}...`);
+	}
+
+	async function generateAllLogos() {
+		// Use a concurrency pool to generate logos efficiently
+		// Increased concurrency to 5 for faster results
+		const concurrency = 5;
+		const queue = suggestions.map((_, index) => index);
+
+		const worker = async () => {
+			while (queue.length > 0) {
+				const index = queue.shift();
+				if (index !== undefined) {
+					await generateHQLogo(index, suggestions[index].name);
+				}
+			}
+		};
+
+		// Start workers
+		const workers = Array(concurrency).fill(null).map(() => worker());
+		await Promise.all(workers);
+	}
+
+	async function generateHQLogo(index, name) {
+		// If already generated or generating, skip
+		if (suggestions[index].logoUrl || suggestions[index].generating) return;
+
+		suggestions[index].generating = true;
+		suggestions = [...suggestions]; // Trigger reactivity
+
+		try {
+			const res = await fetch(`/api/generate-logo?name=${encodeURIComponent(name)}&vibe=${encodeURIComponent(vibe)}`, {
+				method: 'POST'
+			});
+			const data = await res.json();
+			if (data.url) {
+				suggestions[index].logoUrl = data.url;
+			}
+		} catch (e) {
+			console.error(`Failed to generate logo for ${name}:`, e);
+		} finally {
+			suggestions[index].generating = false;
+			suggestions = [...suggestions]; // Trigger reactivity
+		}
 	}
 </script>
 
@@ -580,14 +626,14 @@
 						</button>
 					</div>
 
-					<div class="grid md:grid-cols-2 gap-6">
+					<div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
 						{#each suggestions as s, i}
 							<div
 								class="card overflow-hidden group"
 								style="animation-delay: {i * 100}ms"
 							>
 								<div
-									class="aspect-video bg-surface-50 flex items-center justify-center p-8 group-hover:bg-surface-100 transition-colors"
+									class="aspect-video bg-surface-50 flex items-center justify-center p-8 group-hover:bg-surface-100 transition-colors relative"
 								>
 									{#if s.logoUrl}
 										<img
@@ -598,6 +644,11 @@
 									{:else}
 										<div class="w-32 h-32 text-brand-600">
 											{@html s.svg}
+										</div>
+									{/if}
+									{#if s.generating}
+										<div class="absolute bottom-2 left-0 right-0 text-center">
+											<span class="text-xs font-medium text-brand-600 animate-pulse bg-white/80 px-2 py-1 rounded-full">Generating HQ...</span>
 										</div>
 									{/if}
 								</div>
