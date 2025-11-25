@@ -91,7 +91,7 @@ async def generate_logo_image(name: str, vibe: str) -> str:
     if not client:
         return ""
 
-    prompt = f"A modern, minimalist vector logo for a brand named '{name}'. Vibe: {vibe}. Simple, clean, professional, white background."
+    prompt = f"A professional, high-quality logo design for a brand named '{name}'. Industry vibe: {vibe}. Vector style, flat design, minimal, white background, high resolution."
     
     try:
         response = await client.images.generate(
