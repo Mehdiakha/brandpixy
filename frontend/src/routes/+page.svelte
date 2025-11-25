@@ -73,8 +73,8 @@
 			step = 4;
 			loading = false;
 		} catch (error) {
-			console.error("Submission error:", error);
-			alert("Something went wrong. Please try again.");
+			console.error("Submission error details:", error);
+			alert(`Error: ${error.message}. Check console for details.`);
 			loading = false;
 		}
 	}
@@ -109,24 +109,9 @@
 								class="w-full h-full object-contain"
 							/>
 						</div>
-						<span
-							class="text-xl font-display font-bold bg-clip-text text-transparent bg-gradient-to-r from-brand-600 to-brand-400"
-						>
-							BrandPixy
-						</span>
 					</div>
 
 					<div class="hidden md:flex items-center gap-8">
-						<a
-							href="#features"
-							class="text-sm font-medium text-surface-600 hover:text-brand-600 transition-colors"
-							>Features</a
-						>
-						<a
-							href="#pricing"
-							class="text-sm font-medium text-surface-600 hover:text-brand-600 transition-colors"
-							>Pricing</a
-						>
 						<ThemeToggle />
 						<button
 							class="btn btn-primary"
