@@ -1,4 +1,34 @@
 @import "tailwindcss";
+@config "../tailwind.config.js";
+
+@theme {
+  --font-family-sans: 'Inter', system-ui, sans-serif;
+  --font-family-display: 'Outfit', 'Inter', system-ui, sans-serif;
+
+  --color-brand-50: 239 246 255;
+  --color-brand-100: 219 234 254;
+  --color-brand-200: 191 219 254;
+  --color-brand-300: 147 197 253;
+  --color-brand-400: 96 165 250;
+  --color-brand-500: 59 130 246;
+  --color-brand-600: 37 99 235;
+  --color-brand-700: 29 78 216;
+  --color-brand-800: 30 64 175;
+  --color-brand-900: 30 58 138;
+  --color-brand-950: 23 37 84;
+
+  --color-surface-50: 248 250 252;
+  --color-surface-100: 241 245 249;
+  --color-surface-200: 226 232 240;
+  --color-surface-300: 203 213 225;
+  --color-surface-400: 148 163 184;
+  --color-surface-500: 100 116 139;
+  --color-surface-600: 71 85 105;
+  --color-surface-700: 51 65 85;
+  --color-surface-800: 30 41 59;
+  --color-surface-900: 15 23 42;
+  --color-surface-950: 2 6 23;
+}
 
 @layer base {
   :root {
