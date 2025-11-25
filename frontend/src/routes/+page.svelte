@@ -51,29 +51,24 @@
 		suggestions = [];
 
 		try {
-			// Mock response for UI testing if API fails or doesn't exist
-			// Remove this mock in production if real API is ready
-			await new Promise((r) => setTimeout(r, 2000));
-			suggestions = [
-				{
-					name: "Apex",
-					tagline: "Reach the summit",
-					logoUrl: "",
-					svg: '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="#3b82f6"/></svg>',
+			const response = await fetch("http://127.0.0.1:8000/api/generate", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
 				},
-				{
-					name: "Nova",
-					tagline: "Shine brighter",
-					logoUrl: "",
-					svg: '<svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" fill="#2dd4bf"/></svg>',
-				},
-				{
-					name: "Flux",
-					tagline: "Motion in every move",
-					logoUrl: "",
-					svg: '<svg viewBox="0 0 100 100"><polygon points="50,10 90,90 10,90" fill="#6366f1"/></svg>',
-				},
-			];
+				body: JSON.stringify({
+					industry,
+					vibe,
+					values,
+				}),
+			});
+
+			if (!response.ok) {
+				throw new Error("Failed to generate brands");
+			}
+
+			const data = await response.json();
+			suggestions = data.suggestions;
 
 			step = 4;
 			loading = false;
@@ -105,7 +100,7 @@
 			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 				<div class="flex justify-between items-center h-20">
 					<div class="flex items-center gap-3">
-						<div class="relative w-10 h-10">
+						<div class="relative w-12 h-12">
 							<img
 								src="/logo01.png"
 								alt="BrandPixy"
@@ -144,6 +139,7 @@
 						<button
 							class="p-2 text-surface-600"
 							onclick={() => (isMenuOpen = !isMenuOpen)}
+							aria-label="Toggle menu"
 						>
 							<svg
 								class="w-6 h-6"
@@ -164,6 +160,33 @@
 					</div>
 				</div>
 			</div>
+
+			<!-- Mobile Menu -->
+			{#if isMenuOpen}
+				<div
+					class="md:hidden absolute top-20 left-0 w-full bg-white/95 dark:bg-surface-900/95 backdrop-blur-lg border-b border-surface-200 dark:border-surface-800 p-4 flex flex-col gap-4 shadow-xl animate-slide-up"
+				>
+					<a
+						href="#features"
+						class="text-lg font-medium text-surface-600 hover:text-brand-600 transition-colors py-2"
+						onclick={() => (isMenuOpen = false)}>Features</a
+					>
+					<a
+						href="#pricing"
+						class="text-lg font-medium text-surface-600 hover:text-brand-600 transition-colors py-2"
+						onclick={() => (isMenuOpen = false)}>Pricing</a
+					>
+					<button
+						class="btn btn-primary w-full"
+						onclick={() => {
+							showApp = true;
+							isMenuOpen = false;
+						}}
+					>
+						Launch Builder
+					</button>
+				</div>
+			{/if}
 		</nav>
 
 		<!-- Hero Section -->
