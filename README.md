@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="frontend/static/logo.jpg" width="160" alt="BrandPixy Logo">
+  <img src="frontend/static/logo01.png" width="160" alt="BrandPixy Logo">
 </p>
 
 <h1 align="center">BrandPixy</h1>
