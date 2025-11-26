@@ -633,7 +633,7 @@
 								style="animation-delay: {i * 100}ms"
 							>
 								<div
-									class="aspect-square bg-surface-50 flex items-center justify-center p-6 group-hover:bg-surface-100 transition-colors relative"
+									class="aspect-square bg-surface-50 flex items-center justify-center p-4 group-hover:bg-surface-100 transition-colors relative overflow-hidden"
 								>
 									{#if s.logoUrl}
 										<img
@@ -642,25 +642,25 @@
 											class="w-full h-full object-contain drop-shadow-md transition-transform duration-500 group-hover:scale-110"
 										/>
 									{:else}
-										<div class="w-full h-full text-brand-600 p-4 transition-transform duration-500 group-hover:scale-110">
+										<div class="w-full h-full text-brand-600 p-2 transition-transform duration-500 group-hover:scale-110 flex items-center justify-center">
 											{@html s.svg}
 										</div>
 									{/if}
 									{#if s.generating}
-										<div class="absolute bottom-2 left-0 right-0 text-center">
-											<span class="text-xs font-medium text-brand-600 animate-pulse bg-white/80 px-2 py-1 rounded-full">Generating HQ...</span>
+										<div class="absolute bottom-2 left-0 right-0 text-center z-10">
+											<span class="text-xs font-medium text-brand-600 animate-pulse bg-white/90 px-2 py-1 rounded-full shadow-sm">Generating HQ...</span>
 										</div>
 									{/if}
 								</div>
-								<div class="p-6">
-									<h3 class="text-2xl font-bold mb-1">
+								<div class="p-5">
+									<h3 class="text-xl font-bold mb-1 truncate" title={s.name}>
 										{s.name}
 									</h3>
-									<p class="text-surface-500 text-sm mb-6">
+									<p class="text-surface-500 text-sm mb-4 line-clamp-2 h-10" title={s.tagline}>
 										{s.tagline}
 									</p>
 									<button
-										class="btn btn-secondary w-full group-hover:bg-brand-50 group-hover:text-brand-700 group-hover:border-brand-200"
+										class="btn btn-secondary w-full text-sm py-2 group-hover:bg-brand-50 group-hover:text-brand-700 group-hover:border-brand-200"
 										onclick={() => downloadLogo(s)}
 									>
 										Download Assets

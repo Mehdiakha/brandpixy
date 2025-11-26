@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import os
@@ -8,6 +8,10 @@ import random
 import html
 from dotenv import load_dotenv
 from openai import AsyncOpenAI
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
 
 load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), '..', '..', '.env'))
 
@@ -16,11 +20,15 @@ client = AsyncOpenAI(api_key=API_KEY) if API_KEY else None
 
 PALETTE = ["#9381ff", "#b8b8ff", "#f8f7ff"]
 
+limiter = Limiter(key_func=get_remote_address)
 app = FastAPI(title="brandpixy API")
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+app.add_middleware(SlowAPIMiddleware)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"], # In production, replace with specific domains
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -166,15 +174,16 @@ def generate_svg(name: str, idx: int = 0) -> str:
 
 
 @app.post('/api/generate')
-async def generate(request: BrandRequest):
-    print(f"Received generation request: {request}")
+@limiter.limit("5/minute")
+async def generate(request: Request, brand_request: BrandRequest):
+    print(f"Received generation request: {brand_request}")
     try:
         suggestions = []
         
         # 1. Generate Brand Names (using OpenAI if available)
         if API_KEY:
             print("OpenAI API Key found. Attempting AI generation...")
-            items = await generate_brand_names(request.industry, request.vibe, request.values)
+            items = await generate_brand_names(brand_request.industry, brand_request.vibe, brand_request.values)
             print(f"OpenAI returned {len(items)} items.")
             
             # 2. Generate Logos (Using local SVG for speed/bulk)
@@ -189,10 +198,10 @@ async def generate(request: BrandRequest):
             if len(suggestions) < 20:
                 print(f"Filling remaining {20 - len(suggestions)} slots with local generation.")
                 remaining = 20 - len(suggestions)
-                suggestions.extend(local_generate(request, count=remaining))
+                suggestions.extend(local_generate(brand_request, count=remaining))
         else:
             print("No OpenAI API Key found. Using local generation.")
-            suggestions = local_generate(request, count=20)
+            suggestions = local_generate(brand_request, count=20)
 
         print(f"Returning {len(suggestions)} suggestions.")
         return {"suggestions": suggestions}
@@ -203,7 +212,8 @@ async def generate(request: BrandRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post('/api/generate-logo')
-async def generate_logo_endpoint(name: str, vibe: str):
+@limiter.limit("10/minute")
+async def generate_logo_endpoint(request: Request, name: str, vibe: str):
     """
     Dedicated endpoint to generate a high-quality DALL-E logo for a specific brand.
     Frontend can call this on demand (e.g., when user clicks a specific result).
