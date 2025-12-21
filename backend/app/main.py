@@ -6,8 +6,10 @@ import json
 import httpx
 import random
 import html
+import base64
 from dotenv import load_dotenv
-from openai import AsyncOpenAI
+from google import genai
+from google.genai import types
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
@@ -15,8 +17,8 @@ from slowapi.middleware import SlowAPIMiddleware
 
 load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), '..', '..', '.env'))
 
-API_KEY = os.getenv('OPENAI_API_KEY')
-client = AsyncOpenAI(api_key=API_KEY) if API_KEY else None
+API_KEY = os.getenv('GEMINI_API_KEY')
+client = genai.Client(api_key=API_KEY) if API_KEY else None
 
 PALETTE = ["#9381ff", "#b8b8ff", "#f8f7ff"]
 
@@ -40,7 +42,7 @@ async def root():
 
 @app.get("/api/health")
 async def health_check():
-    return {"status": "ok", "openai_enabled": bool(API_KEY)}
+    return {"status": "ok", "gemini_enabled": bool(API_KEY)}
 
 
 class BrandRequest(BaseModel):
@@ -49,12 +51,12 @@ class BrandRequest(BaseModel):
     values: str
 
 
-async def generate_brand_names(industry: str, vibe: str, values: str) -> list[dict]:
+def generate_brand_names(industry: str, vibe: str, values: str) -> list[dict]:
     """
-    Generates creative brand names and taglines using OpenAI GPT-4o.
+    Generates creative brand names and taglines using Google Gemini.
     """
     if not client:
-        print("OpenAI Client not initialized. Skipping AI generation.")
+        print("Gemini Client not initialized. Skipping AI generation.")
         return []
 
     prompt = f"""
@@ -64,21 +66,21 @@ async def generate_brand_names(industry: str, vibe: str, values: str) -> list[di
     Values: {values}
     
     Return a JSON object with a key "brands" containing an array of objects, each with "name" and "tagline" fields.
+    Output ONLY valid JSON, no markdown formatting.
     """
     
     try:
-        print(f"Sending request to OpenAI for industry: {industry}")
-        response = await client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[
-                {"role": "system", "content": "You are a creative brand strategist. Output only valid JSON."},
-                {"role": "user", "content": prompt}
-            ],
-            response_format={ "type": "json_object" },
-            temperature=0.8,
+        print(f"Sending request to Gemini for industry: {industry}")
+        response = client.models.generate_content(
+            model="gemini-2.0-flash",
+            contents=prompt,
+            config=types.GenerateContentConfig(
+                temperature=0.8,
+                response_mime_type="application/json",
+            ),
         )
-        content = response.choices[0].message.content
-        print("Received response from OpenAI")
+        content = response.text
+        print("Received response from Gemini")
         data = json.loads(content)
         
         items = data.get('brands', [])
@@ -87,32 +89,38 @@ async def generate_brand_names(industry: str, vibe: str, values: str) -> list[di
             
         return items
     except Exception as e:
-        print(f"OpenAI Text Generation Error: {e}")
+        print(f"Gemini Text Generation Error: {e}")
         return []
 
 
-async def generate_logo_image(name: str, vibe: str) -> str:
+def generate_logo_image(name: str, vibe: str) -> str:
     """
-    Generates a logo image URL using OpenAI DALL-E 3.
-    Note: This is expensive and slow, so use sparingly (not for bulk generation).
+    Generates a logo image using Google Gemini Imagen.
+    Returns the image as a base64 data URL.
     """
     if not client:
         return ""
 
     # Enhanced prompt for better logo quality
-    prompt = f"A professional, high-quality logo design for a brand named '{name}'. Industry vibe: {vibe}. Vector style, flat design, minimal, white background, high resolution."
+    prompt = f"A professional, high-quality logo design for a brand named '{name}'. Industry vibe: {vibe}. Vector style, flat design, minimal, white background, high resolution, no text."
     
     try:
-        response = await client.images.generate(
-            model="dall-e-3",
+        response = client.models.generate_images(
+            model="imagen-3.0-generate-002",
             prompt=prompt,
-            size="1024x1024",
-            quality="standard",
-            n=1,
+            config=types.GenerateImagesConfig(
+                number_of_images=1,
+                aspect_ratio="1:1",
+            ),
         )
-        return response.data[0].url
+        
+        if response.generated_images and len(response.generated_images) > 0:
+            image_bytes = response.generated_images[0].image.image_bytes
+            base64_image = base64.b64encode(image_bytes).decode('utf-8')
+            return f"data:image/png;base64,{base64_image}"
+        return ""
     except Exception as e:
-        print(f"OpenAI Image Generation Error: {e}")
+        print(f"Gemini Image Generation Error: {e}")
         return ""
 
 
@@ -180,11 +188,11 @@ async def generate(request: Request, brand_request: BrandRequest):
     try:
         suggestions = []
         
-        # 1. Generate Brand Names (using OpenAI if available)
+        # 1. Generate Brand Names (using Gemini if available)
         if API_KEY:
-            print("OpenAI API Key found. Attempting AI generation...")
-            items = await generate_brand_names(brand_request.industry, brand_request.vibe, brand_request.values)
-            print(f"OpenAI returned {len(items)} items.")
+            print("Gemini API Key found. Attempting AI generation...")
+            items = generate_brand_names(brand_request.industry, brand_request.vibe, brand_request.values)
+            print(f"Gemini returned {len(items)} items.")
             
             # 2. Generate Logos (Using local SVG for speed/bulk)
             for i, item in enumerate(items):
@@ -215,19 +223,19 @@ async def generate(request: Request, brand_request: BrandRequest):
 @limiter.limit("10/minute")
 async def generate_logo_endpoint(request: Request, name: str, vibe: str):
     """
-    Dedicated endpoint to generate a high-quality DALL-E logo for a specific brand.
+    Dedicated endpoint to generate a high-quality logo using Gemini Imagen.
     Frontend can call this on demand (e.g., when user clicks a specific result).
     """
     print(f"Received logo generation request for: {name}, vibe: {vibe}")
     try:
         if not API_KEY:
-            print("No OpenAI API Key found for logo generation.")
-            raise HTTPException(status_code=500, detail="OpenAI API Key not configured on server. Please set OPENAI_API_KEY environment variable.")
+            print("No Gemini API Key found for logo generation.")
+            raise HTTPException(status_code=500, detail="Gemini API Key not configured on server. Please set GEMINI_API_KEY environment variable.")
 
-        url = await generate_logo_image(name, vibe)
+        url = generate_logo_image(name, vibe)
         if not url:
-             print("OpenAI returned empty URL")
-             raise HTTPException(status_code=500, detail="OpenAI returned an empty image URL. Check API key quotas or permissions.")
+             print("Gemini returned empty image")
+             raise HTTPException(status_code=500, detail="Gemini returned an empty image. Check API key quotas or permissions.")
              
         print(f"Generated logo URL: {url}")
         return {"url": url}
