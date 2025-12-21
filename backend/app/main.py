@@ -105,6 +105,7 @@ def generate_logo_image(name: str, vibe: str) -> str:
     prompt = f"A professional, high-quality logo design for a brand named '{name}'. Industry vibe: {vibe}. Vector style, flat design, minimal, white background, high resolution, no text."
     
     try:
+        print(f"Calling Imagen API with prompt: {prompt[:100]}...")
         response = client.models.generate_images(
             model="imagen-3.0-generate-002",
             prompt=prompt,
@@ -118,9 +119,12 @@ def generate_logo_image(name: str, vibe: str) -> str:
             image_bytes = response.generated_images[0].image.image_bytes
             base64_image = base64.b64encode(image_bytes).decode('utf-8')
             return f"data:image/png;base64,{base64_image}"
+        print("Imagen returned no images in response")
         return ""
     except Exception as e:
-        print(f"Gemini Image Generation Error: {e}")
+        print(f"Gemini Image Generation Error: {type(e).__name__}: {e}")
+        import traceback
+        traceback.print_exc()
         return ""
 
 
@@ -226,21 +230,26 @@ async def generate_logo_endpoint(request: Request, name: str, vibe: str):
     Dedicated endpoint to generate a high-quality logo using Gemini Imagen.
     Frontend can call this on demand (e.g., when user clicks a specific result).
     """
-    print(f"Received logo generation request for: {name}, vibe: {vibe}")
+    # Decode HTML entities (e.g., &amp; -> &)
+    clean_name = html.unescape(name)
+    clean_vibe = html.unescape(vibe)
+    print(f"Received logo generation request for: {clean_name}, vibe: {clean_vibe}")
     try:
         if not API_KEY:
             print("No Gemini API Key found for logo generation.")
             raise HTTPException(status_code=500, detail="Gemini API Key not configured on server. Please set GEMINI_API_KEY environment variable.")
 
-        url = generate_logo_image(name, vibe)
+        url = generate_logo_image(clean_name, clean_vibe)
         if not url:
              print("Gemini returned empty image")
              raise HTTPException(status_code=500, detail="Gemini returned an empty image. Check API key quotas or permissions.")
              
-        print(f"Generated logo URL: {url}")
+        print(f"Generated logo successfully for: {clean_name}")
         return {"url": url}
     except HTTPException as he:
         raise he
     except Exception as e:
         print(f"Error generating logo: {e}")
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Server Error: {str(e)}")
