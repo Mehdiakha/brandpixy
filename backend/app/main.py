@@ -107,10 +107,10 @@ def generate_logo_image(name: str, vibe: str) -> str:
     try:
         print(f"Calling Gemini image generation for: {name}")
         response = client.models.generate_content(
-            model='gemini-2.0-flash-exp',
+            model='gemini-2.5-flash-preview-05-20',
             contents=prompt,
             config=types.GenerateContentConfig(
-                response_modalities=["IMAGE"],
+                response_modalities=["TEXT", "IMAGE"],
             ),
         )
         
