@@ -95,31 +95,35 @@ def generate_brand_names(industry: str, vibe: str, values: str) -> list[dict]:
 
 def generate_logo_image(name: str, vibe: str) -> str:
     """
-    Generates a logo image using Google Gemini Imagen.
+    Generates a logo image using Gemini's native image generation.
     Returns the image as a base64 data URL.
     """
     if not client:
         return ""
 
-    # Enhanced prompt for better logo quality
-    prompt = f"A professional, high-quality logo design for a brand named '{name}'. Industry vibe: {vibe}. Vector style, flat design, minimal, white background, high resolution, no text."
+    # Use Gemini's native image generation capability
+    prompt = f"Create a professional, high-quality logo design for a brand named '{name}'. Industry vibe: {vibe}. Vector style, flat design, minimal, clean white background, high resolution, no text in the image."
     
     try:
-        print(f"Calling Imagen API with prompt: {prompt[:100]}...")
-        response = client.models.generate_images(
-            model="imagen-3.0-generate-002",
-            prompt=prompt,
-            config=types.GenerateImagesConfig(
-                number_of_images=1,
-                aspect_ratio="1:1",
+        print(f"Calling Gemini image generation for: {name}")
+        response = client.models.generate_content(
+            model='gemini-2.0-flash-exp',
+            contents=prompt,
+            config=types.GenerateContentConfig(
+                response_modalities=["IMAGE"],
             ),
         )
         
-        if response.generated_images and len(response.generated_images) > 0:
-            image_bytes = response.generated_images[0].image.image_bytes
-            base64_image = base64.b64encode(image_bytes).decode('utf-8')
-            return f"data:image/png;base64,{base64_image}"
-        print("Imagen returned no images in response")
+        # Extract image from response parts
+        if response.parts:
+            for part in response.parts:
+                if part.inline_data and part.inline_data.data:
+                    image_bytes = part.inline_data.data
+                    mime_type = part.inline_data.mime_type or "image/png"
+                    base64_image = base64.b64encode(image_bytes).decode('utf-8')
+                    return f"data:{mime_type};base64,{base64_image}"
+        
+        print("Gemini returned no image in response")
         return ""
     except Exception as e:
         print(f"Gemini Image Generation Error: {type(e).__name__}: {e}")
