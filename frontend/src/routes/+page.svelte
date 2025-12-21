@@ -90,8 +90,8 @@
 
 	async function generateAllLogos() {
 		// Use a concurrency pool to generate logos efficiently
-		// Increased concurrency to 5 for faster results
-		const concurrency = 5;
+		// Reduced concurrency to 2 to avoid rate limiting
+		const concurrency = 2;
 		const queue = suggestions.map((_, index) => index);
 
 		const worker = async () => {

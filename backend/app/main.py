@@ -220,7 +220,7 @@ async def generate(request: Request, brand_request: BrandRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post('/api/generate-logo')
-@limiter.limit("10/minute")
+@limiter.limit("30/minute")
 async def generate_logo_endpoint(request: Request, name: str, vibe: str):
     """
     Dedicated endpoint to generate a high-quality logo using Gemini Imagen.
