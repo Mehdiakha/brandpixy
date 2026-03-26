@@ -1,7 +1,6 @@
 <script>
 	import { onMount } from "svelte";
 	import { fade, fly, slide } from "svelte/transition";
-	import ThemeToggle from "$lib/components/ThemeToggle.svelte";
 
 	let industry = "";
 	let vibe = "Modern";
@@ -142,279 +141,103 @@
 
 {#if !showApp}
 	<div class="min-h-screen flex flex-col">
-		<!-- Navigation -->
-		<nav
-			class="sticky top-4 z-50 max-w-5xl mx-auto rounded-2xl glass border border-surface-200/50 shadow-xl transition-all duration-300"
-		>
-			<div class="px-4 sm:px-6 lg:px-8">
+		<!-- Minimal Navigation -->
+		<nav class="border-b border-surface-200 bg-white sticky top-0 z-50">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 				<div class="flex justify-between items-center h-16">
-					<div class="flex items-center gap-3">
-						<div class="relative w-12 h-12">
-							<img
-								src="/logo01.png"
-								alt="BrandPixy"
-								class="w-full h-full object-contain"
-							/>
-						</div>
+					<div class="flex items-center gap-2">
+						<svg class="w-8 h-8 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+						</svg>
+						<span class="text-lg font-bold text-surface-900">BrandPixy</span>
 					</div>
-
-					<div class="hidden md:flex items-center gap-8">
-						<ThemeToggle />
-						<button
-							class="btn btn-primary"
-							onclick={() => (showApp = true)}
-						>
-							Launch Builder
-						</button>
-					</div>
-
-					<div class="md:hidden flex items-center gap-4">
-						<ThemeToggle />
-						<button
-							class="p-2 text-surface-600"
-							onclick={() => (isMenuOpen = !isMenuOpen)}
-							aria-label="Toggle menu"
-						>
-							<svg
-								class="w-6 h-6"
-								fill="none"
-								stroke="currentColor"
-								viewBox="0 0 24 24"
-							>
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
-									d={isMenuOpen
-										? "M6 18L18 6M6 6l12 12"
-										: "M4 6h16M4 12h16M4 18h16"}
-								/>
-							</svg>
-						</button>
-					</div>
-				</div>
-			</div>
-
-			<!-- Mobile Menu -->
-			{#if isMenuOpen}
-				<div
-					class="md:hidden absolute top-20 left-0 w-full bg-white/95 dark:bg-surface-900/95 backdrop-blur-lg border-b border-surface-200 dark:border-surface-800 p-4 flex flex-col gap-4 shadow-xl animate-slide-up"
-				>
-					<a
-						href="#features"
-						class="text-lg font-medium text-surface-600 hover:text-brand-600 transition-colors py-2"
-						onclick={() => (isMenuOpen = false)}>Features</a
-					>
-					<a
-						href="#pricing"
-						class="text-lg font-medium text-surface-600 hover:text-brand-600 transition-colors py-2"
-						onclick={() => (isMenuOpen = false)}>Pricing</a
-					>
 					<button
-						class="btn btn-primary w-full"
-						onclick={() => {
-							showApp = true;
-							isMenuOpen = false;
-						}}
+						class="px-6 py-2 bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors font-medium"
+						onclick={() => (showApp = true)}
 					>
 						Launch Builder
 					</button>
 				</div>
-			{/if}
+			</div>
 		</nav>
 
 		<!-- Hero Section -->
 		<main class="flex-grow">
-			<div class="relative overflow-hidden pt-20 pb-32">
-				<div
-					class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-brand-500/5 rounded-full pointer-events-none"
-				></div>
-
-				<div
-					class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center"
-				>
-					<div
-						class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-50 text-brand-700 text-sm font-medium mb-8 animate-fade-in"
-					>
-						<span class="relative flex h-2 w-2">
-							<span
-								class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75"
-							></span>
-							<span
-								class="relative inline-flex rounded-full h-2 w-2 bg-brand-500"
-							></span>
-						</span>
-						AI-Powered Brand Generation v2.0
-					</div>
-
-					<h1
-						class="text-5xl md:text-7xl font-bold tracking-tight mb-8 animate-slide-up"
-						style="animation-delay: 0.1s"
-					>
-						Craft your brand identity <br />
-						<span
-							class="text-transparent bg-clip-text bg-gradient-primary"
-							>in seconds, not weeks.</span
-						>
+			<div class="pt-20 pb-32">
+				<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+					<h1 class="text-5xl md:text-6xl font-bold tracking-tight mb-6">
+						Create your brand identity instantly
 					</h1>
 
-					<p
-						class="text-xl text-surface-600 max-w-2xl mx-auto mb-12 animate-slide-up"
-						style="animation-delay: 0.2s"
-					>
-						Generate unique logos, color palettes, and brand stories
-						tailored to your industry. Professional quality,
-						instantly available.
+					<p class="text-lg text-surface-600 max-w-2xl mx-auto mb-10">
+						Generate unique logos and brand concepts powered by AI. 
+						Get professional results in seconds.
 					</p>
 
-					<div
-						class="flex flex-col sm:flex-row items-center justify-center gap-4 animate-slide-up"
-						style="animation-delay: 0.3s"
+					<button
+						class="px-8 py-3 bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors font-medium text-lg"
+						onclick={() => (showApp = true)}
 					>
-						<button
-							class="btn text-lg px-10 py-5 w-full sm:w-auto bg-purple-600 text-white font-bold shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 rounded-xl hover:bg-purple-700"
-							onclick={() => (showApp = true)}
-						>
-							Start Generating Free
-						</button>
-					</div>
+						Start Creating
+					</button>
 
 					<!-- Stats -->
-					<div
-						class="grid grid-cols-2 md:grid-cols-4 gap-8 mt-24 border-t border-surface-200 pt-12 animate-fade-in"
-						style="animation-delay: 0.5s"
-					>
+					<div class="grid grid-cols-3 gap-8 mt-24 border-t border-surface-200 pt-16">
 						<div>
-							<div class="text-3xl font-bold text-surface-900">
-								10k+
-							</div>
-							<div class="text-sm text-surface-500 mt-1">
-								Brands Created
-							</div>
+							<div class="text-3xl font-bold text-surface-900">10k+</div>
+							<div class="text-sm text-surface-500 mt-2">Brands Created</div>
 						</div>
 						<div>
-							<div class="text-3xl font-bold text-surface-900">
-								100%
-							</div>
-							<div class="text-sm text-surface-500 mt-1">
-								AI Generated
-							</div>
+							<div class="text-3xl font-bold text-surface-900">&lt; 1min</div>
+							<div class="text-sm text-surface-500 mt-2">Generation Time</div>
 						</div>
 						<div>
-							<div class="text-3xl font-bold text-surface-900">
-								&lt; 30s
-							</div>
-							<div class="text-sm text-surface-500 mt-1">
-								Generation Time
-							</div>
-						</div>
-						<div>
-							<div class="text-3xl font-bold text-surface-900">
-								4.9/5
-							</div>
-							<div class="text-sm text-surface-500 mt-1">
-								User Rating
-							</div>
+							<div class="text-3xl font-bold text-surface-900">100%</div>
+							<div class="text-sm text-surface-500 mt-2">AI Powered</div>
 						</div>
 					</div>
 				</div>
 			</div>
 
-			<!-- Features Grid -->
-			<section id="features" class="py-24 bg-surface-50">
-				<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-					<div class="text-center mb-16">
-						<h2 class="text-3xl font-bold mb-4">
-							Everything you need to launch
-						</h2>
-						<p class="text-surface-600 max-w-2xl mx-auto">
-							From logo to brand guidelines, we generate a
-							complete identity package.
-						</p>
-					</div>
+			<!-- Features Section -->
+			<section class="py-20 bg-surface-50">
+				<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+					<h2 class="text-3xl font-bold mb-12">How it works</h2>
 
 					<div class="grid md:grid-cols-3 gap-8">
-						<div
-							class="card p-8 hover:-translate-y-1 transition-transform"
-						>
-							<img
-								src="/logo01.png"
-								alt="BrandPixy Logo"
-								class="w-12 h-12 border-4 border-slate-900 dark:border-slate-100 object-cover mb-6"
-							/>
-							<h3 class="text-xl font-bold mb-3">
-								Instant Generation
-							</h3>
-							<p class="text-surface-600 leading-relaxed">
-								Get dozens of unique concepts in seconds.
-								Iterate and refine until it's perfect.
-							</p>
+						<div class="bg-white p-8 rounded-lg border border-surface-200">
+							<div class="text-4xl mb-4">🎯</div>
+							<h3 class="text-xl font-bold mb-2">Describe Your Brand</h3>
+							<p class="text-surface-600">Tell us about your industry, style, and values.</p>
 						</div>
-						<div
-							class="card p-8 hover:-translate-y-1 transition-transform"
-						>
-							<div
-								class="w-12 h-12 rounded-lg bg-teal-100 text-teal-600 flex items-center justify-center text-2xl mb-6"
-							>
-								🎨
-							</div>
-							<h3 class="text-xl font-bold mb-3">
-								Modern Aesthetics
-							</h3>
-							<p class="text-surface-600 leading-relaxed">
-								Trained on the latest design trends to ensure
-								your brand looks fresh and premium.
-							</p>
+
+						<div class="bg-white p-8 rounded-lg border border-surface-200">
+							<div class="text-4xl mb-4">⚡</div>
+							<h3 class="text-xl font-bold mb-2">Get Instant Concepts</h3>
+							<p class="text-surface-600">Receive multiple logo and design variations instantly.</p>
 						</div>
-						<div
-							class="card p-8 hover:-translate-y-1 transition-transform"
-						>
-							<div
-								class="w-12 h-12 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center text-2xl mb-6"
-							>
-								📦
-							</div>
-							<h3 class="text-xl font-bold mb-3">Full Export</h3>
-							<p class="text-surface-600 leading-relaxed">
-								Download high-res PNGs, SVGs, and brand
-								guideline documents instantly.
-							</p>
+
+						<div class="bg-white p-8 rounded-lg border border-surface-200">
+							<div class="text-4xl mb-4">📥</div>
+							<h3 class="text-xl font-bold mb-2">Download & Use</h3>
+							<p class="text-surface-600">Export high-quality files ready for your business.</p>
 						</div>
 					</div>
 				</div>
 			</section>
 		</main>
 
-		<footer class="bg-white border-t border-surface-200 py-12">
-			<div
-				class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6"
-			>
-				<div class="flex items-center gap-2">
-					<img
-						src="/logo01.png"
-						alt="BrandPixy"
-						class="w-8 h-8 object-contain"
-					/>
-					<span class="font-bold text-surface-900">BrandPixy</span>
-				</div>
-				<div class="flex gap-8 text-sm text-surface-500">
-					<a href="#" class="hover:text-brand-600">Privacy</a>
-					<a href="#" class="hover:text-brand-600">Terms</a>
-					<a href="#" class="hover:text-brand-600">Contact</a>
-				</div>
-				<div class="text-sm text-surface-400">
-					&copy; {new Date().getFullYear()} BrandPixy. All rights reserved.
-				</div>
+		<footer class="bg-white border-t border-surface-200 py-8">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-surface-500 text-sm">
+				&copy; {new Date().getFullYear()} BrandPixy. All rights reserved.
 			</div>
 		</footer>
 	</div>
 {:else}
-	<div class="min-h-screen flex flex-col bg-surface-50">
+	<div class="min-h-screen flex flex-col bg-white">
 		<!-- App Header -->
-		<header class="sticky top-0 z-40 glass border-b border-surface-200/50">
-			<div
-				class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between"
-			>
+		<header class="border-b border-surface-200 bg-white sticky top-0 z-40">
+			<div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
 				<button
 					class="flex items-center gap-2 font-bold text-surface-900 hover:text-brand-600 transition-colors"
 					onclick={() => {
@@ -422,46 +245,28 @@
 						step = 1;
 					}}
 				>
-					<img
-						src="/logo01.png"
-						alt="BrandPixy"
-						class="w-8 h-8 object-contain"
-					/>
+					<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+					</svg>
 					<span>BrandPixy</span>
 				</button>
 
 				{#if step < 4}
-					<div class="flex items-center gap-2">
+					<div class="flex items-center gap-3">
 						{#each [1, 2, 3] as idx}
-							<div
-								class={`h-2 w-12 rounded-full transition-all duration-300 ${step >= idx ? "bg-brand-500" : "bg-surface-200"}`}
-							></div>
+							<div class={`w-2 h-2 rounded-full ${step >= idx ? "bg-brand-600" : "bg-surface-200"}`}></div>
 						{/each}
 					</div>
-				{:else}
-					<button
-						class="btn btn-secondary text-sm py-2"
-						onclick={() => {
-							step = 1;
-							suggestions = [];
-						}}
-					>
-						New Project
-					</button>
 				{/if}
 			</div>
 		</header>
 
-		<main class="flex-1 w-full max-w-3xl mx-auto px-4 py-12">
+		<main class="flex-1 w-full max-w-2xl mx-auto px-4 py-12">
 			{#if step < 4}
-				<div class="card p-8 md:p-12 animate-scale-in">
+				<div class="bg-white border border-surface-200 rounded-lg p-8">
 					{#if step === 1}
 						<div class="space-y-8">
 							<div class="text-center space-y-2">
-								<span
-									class="text-brand-600 font-medium text-sm tracking-wider uppercase"
-									>Step 1 of 3</span
-								>
 								<h2 class="text-3xl font-bold">
 									What's your industry?
 								</h2>
@@ -510,10 +315,6 @@
 					{#if step === 2}
 						<div class="space-y-8">
 							<div class="text-center space-y-2">
-								<span
-									class="text-brand-600 font-medium text-sm tracking-wider uppercase"
-									>Step 2 of 3</span
-								>
 								<h2 class="text-3xl font-bold">
 									Choose your vibe
 								</h2>
@@ -560,10 +361,6 @@
 					{#if step === 3}
 						<div class="space-y-8">
 							<div class="text-center space-y-2">
-								<span
-									class="text-brand-600 font-medium text-sm tracking-wider uppercase"
-									>Step 3 of 3</span
-								>
 								<h2 class="text-3xl font-bold">Core Values</h2>
 								<p class="text-surface-500">
 									Any specific keywords or values to
@@ -575,7 +372,7 @@
 								type="text"
 								bind:value={values}
 								placeholder="e.g. sustainability, speed, trust"
-								class="input text-lg py-4 pl-6"
+								class="w-full px-4 py-3 border border-surface-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
 								onkeydown={(e) => e.key === "Enter" && submit()}
 								autofocus
 							/>
@@ -626,23 +423,18 @@
 						</button>
 					</div>
 
-					<div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+					<div class="grid md:grid-cols-2 gap-6">
 						{#each suggestions as s, i}
-							<div
-								class="card overflow-hidden group"
-								style="animation-delay: {i * 100}ms"
-							>
-								<div
-									class="aspect-square bg-surface-50 flex items-center justify-center p-4 group-hover:bg-surface-100 transition-colors relative overflow-hidden"
-								>
+							<div class="bg-white border border-surface-200 rounded-lg overflow-hidden">
+								<div class="aspect-square bg-surface-50 flex items-center justify-center p-4">
 									{#if s.logoUrl}
 										<img
 											src={s.logoUrl}
 											alt={s.name}
-											class="w-full h-full object-contain drop-shadow-md transition-transform duration-500 group-hover:scale-110"
+											class="w-full h-full object-contain drop-shadow-sm"
 										/>
 									{:else}
-										<div class="w-full h-full text-brand-600 p-2 transition-transform duration-500 group-hover:scale-110 flex items-center justify-center">
+										<div class="w-full h-full text-brand-600 p-2 flex items-center justify-center">
 											{@html s.svg}
 										</div>
 									{/if}
@@ -652,54 +444,34 @@
 										</div>
 									{/if}
 								</div>
-								<div class="p-5">
-									<h3 class="text-xl font-bold mb-1 truncate" title={s.name}>
-										{s.name}
-									</h3>
-									<p class="text-surface-500 text-sm mb-4 line-clamp-2 h-10" title={s.tagline}>
+								<div class="p-4">
+									<h3 class="font-bold mb-2 truncate">{s.name}</h3>
+									<p class="text-surface-500 text-sm mb-4 line-clamp-2">
 										{s.tagline}
 									</p>
 									<button
-										class="btn btn-secondary w-full text-sm py-2 group-hover:bg-brand-50 group-hover:text-brand-700 group-hover:border-brand-200"
+										class="btn btn-secondary w-full text-sm py-2"
 										onclick={() => downloadLogo(s)}
 									>
-										Download Assets
+										Download
 									</button>
 								</div>
 							</div>
 						{/each}
 
 						<!-- Premium Card -->
-						<div
-							class="card overflow-hidden relative group border-brand-200"
-						>
-							<div
-								class="absolute inset-0 bg-gradient-primary opacity-5 group-hover:opacity-10 transition-opacity"
-							></div>
-							<div
-								class="p-8 h-full flex flex-col justify-center items-center text-center space-y-6"
-							>
-								<div
-									class="w-16 h-16 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center text-2xl"
-								>
-									💎
-								</div>
-								<div>
-									<h3 class="text-xl font-bold">
-										Unlock Full Brand Kit
-									</h3>
-									<p class="text-surface-600 mt-2 text-sm">
-										Get social media templates, business
-										cards, and brand guidelines.
-									</p>
-								</div>
-								<button
-									class="btn btn-primary w-full shadow-glow"
-									onclick={() => (showUnlockModal = true)}
-								>
-									Upgrade for $29
-								</button>
+						<div class="bg-white border border-surface-200 rounded-lg p-8 flex flex-col justify-center items-center text-center space-y-4">
+							<div class="text-3xl">💎</div>
+							<div>
+								<h3 class="font-bold">Unlock Full Brand Kit</h3>
+								<p class="text-surface-600 text-sm mt-1">Get templates & brand guidelines</p>
 							</div>
+							<button
+								class="btn btn-primary w-full"
+								onclick={() => (showUnlockModal = true)}
+							>
+								Upgrade for $29
+							</button>
 						</div>
 					</div>
 				</div>
@@ -714,12 +486,9 @@
 		class="fixed inset-0 z-[100] flex items-center justify-center p-4"
 		transition:fade={{ duration: 200 }}
 	>
+		<div class="absolute inset-0 bg-black/30">
 		<div
-			class="absolute inset-0 bg-surface-900/60 backdrop-blur-sm"
-			onclick={() => (showUnlockModal = false)}
-		></div>
-		<div
-			class="relative card w-full max-w-lg p-8 shadow-2xl animate-scale-in"
+			class="relative bg-white border border-surface-200 rounded-lg w-full max-w-lg p-8 shadow-lg"
 		>
 			<button
 				class="absolute top-4 right-4 text-surface-400 hover:text-surface-900"
