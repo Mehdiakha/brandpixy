@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://brandpixy-api.fly.dev/api/:path*"
+    }
+  ]
+}
