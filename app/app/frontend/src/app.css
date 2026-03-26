@@ -67,11 +67,6 @@
   }
 
   .btn-primary {
-    @apply bg-brand-600 text-white hover:bg-brand-700 shadow-lg shadow-brand-500/20 hover:shadow-brand-500/30;
-  }lg font-medium transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:pointer-events-none;
-  }
-
-  .btn-primary {
     @apply bg-brand-600 text-white hover:bg-brand-700;
   }
 
@@ -92,7 +87,11 @@
   }
 
   .glass {
-    @apply bg-white/70 backdrop-blur-lg border border-white/20 shadow
+    @apply bg-white/70 backdrop-blur-lg border border-white/20;
+  }
+}
+
+::-webkit-scrollbar {
   width: 8px;
 }
 
@@ -101,5 +100,5 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-surface-300 dark:bg-surface-700 rounded-full hover:bg-surface-400 dark:hover:bg-surface-600 transition-colors;
-}rounded-full hover:bg-surface-4
+  @apply bg-surface-300 rounded-full hover:bg-surface-400 transition-colors;
+}
