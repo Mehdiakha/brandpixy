@@ -485,7 +485,7 @@
 		class="fixed inset-0 z-[100] flex items-center justify-center p-4"
 		transition:fade={{ duration: 200 }}
 	>
-		<div class="absolute inset-0 bg-black/30">
+		<div class="absolute inset-0 bg-black/30"></div>
 		<div
 			class="relative bg-white border border-surface-200 rounded-lg w-full max-w-lg p-8 shadow-lg"
 		>
