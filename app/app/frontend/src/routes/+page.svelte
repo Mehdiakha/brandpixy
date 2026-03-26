@@ -478,7 +478,6 @@
 			{/if}
 		</main>
 	</div>
-{/if}
 
 <!-- Modal -->
 {#if showUnlockModal}
