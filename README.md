@@ -20,13 +20,15 @@ BrandPixy helps entrepreneurs, creators, and businesses build a brand identity i
 ## Features
 
 - **Interactive 3-Phase Flow**  
-  Choose your Industry → Vibe → Core Values in a smooth guided experience.
+  Choose your Industry → Vibe → Core Values -> Target Audience in a smooth guided experience.
 
 - **AI-Powered Brand Naming**  
-  Generates unique names and taglines using Google Gemini.
-
+  Generates unique names and taglines
+  domain name and social checks of your brand name 
+  
 - **Visual Identity Generation**  
   Creates SVG logo concepts based on the brand DNA.
+  create mockups
 
 - **Modern UI/UX**  
   Sleek, minimalist, and animated frontend for an enjoyable user experience.
@@ -36,5 +38,4 @@ BrandPixy helps entrepreneurs, creators, and businesses build a brand identity i
 ## Tech Stack
 
 - **Frontend:** SvelteKit, Vite, TailwindCSS, Shadcn, PostCSS
-- **Backend:** FastAPI, Python, Requests
-- **AI Models:** Google Gemini, DALL-E, OpenAI
+- **Backend:** FastAPI, Postgres
