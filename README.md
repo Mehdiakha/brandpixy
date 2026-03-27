@@ -19,7 +19,7 @@ BrandPixy helps entrepreneurs, creators, and businesses build a brand identity i
 
 ## Features
 
-- **Interactive 3-Phase Flow**  
+- **Interactive Phase Flow**  
   Choose your Industry → Vibe → Core Values -> Target Audience in a smooth guided experience.
 
 - **AI-Powered Brand Naming**  
