@@ -1,548 +1,887 @@
 <script>
-	import { onMount } from "svelte";
-	import { fade, fly, slide } from "svelte/transition";
+    import { onMount } from "svelte";
+    import { fade, fly, slide } from "svelte/transition";
 
-	let industry = "";
-	let vibe = "Modern";
-	let values = "";
-	let step = 1;
-	let loading = false;
-	let suggestions = [];
-	let showApp = false;
-	let generatingLogoFor = null;
-	let showUnlockModal = false;
-	let isMenuOpen = false;
+    let industry = "";
+    let vibe = "Modern";
+    let values = "";
+    let step = 1;
+    let loading = false;
+    let suggestions = [];
+    let showApp = false;
+    let generatingLogoFor = null;
+    let showUnlockModal = false;
+    let isMenuOpen = false;
 
-	const vibes = [
-		{
-			id: "Modern",
-			emoji: "🚀",
-			desc: "Clean, sleek, and forward-thinking",
-		},
-		{ id: "Luxury", emoji: "💎", desc: "Elegant, premium, and exclusive" },
-		{ id: "Fun", emoji: "🎨", desc: "Playful, energetic, and vibrant" },
-		{ id: "Minimalist", emoji: "✨", desc: "Simple, essential, and pure" },
-		{ id: "Tech", emoji: "⚡", desc: "Digital, innovative, and smart" },
-		{
-			id: "Classic",
-			emoji: "🏛️",
-			desc: "Timeless, trustworthy, and established",
-		},
-		{
-			id: "Professional",
-			emoji: "💼",
-			desc: "Corporate, serious, and reliable",
-		},
-		{ id: "Eco", emoji: "🌿", desc: "Natural, organic, and sustainable" },
-	];
+    const vibes = [
+        {
+            id: "Modern",
+            desc: "Clean, sleek, and forward-thinking",
+        },
+        {
+            id: "Luxury",
+            desc: "Elegant, premium, and exclusive",
+        },
+        {
+            id: "Fun",
+            desc: "Playful, energetic, and vibrant",
+        },
+        {
+            id: "Minimalist",
+            desc: "Simple, essential, and pure",
+        },
+        {
+            id: "Tech",
+            desc: "Digital, innovative, and smart",
+        },
+        {
+            id: "Classic",
+            desc: "Timeless, trustworthy, and established",
+        },
+        {
+            id: "Professional",
+            desc: "Corporate, serious, and reliable",
+        },
+        {
+            id: "Eco",
+            desc: "Natural, organic, and sustainable",
+        },
+    ];
 
-	function nextStep() {
-		if (step < 3) step++;
-	}
+    function nextStep() {
+        if (step < 3) step++;
+    }
 
-	function prevStep() {
-		if (step > 1) step--;
-	}
+    function prevStep() {
+        if (step > 1) step--;
+    }
 
-	async function submit() {
-		if (!industry) return;
-		loading = true;
-		suggestions = [];
+    async function submit() {
+        if (!industry) return;
 
-		try {
-			const response = await fetch("/api/generate", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					industry,
-					vibe,
-					values,
-				}),
-			});
+        loading = true;
+        suggestions = [];
 
-			if (!response.ok) {
-				const errData = await response.json().catch(() => ({}));
-				throw new Error(errData.detail || "Failed to generate brands");
-			}
+        try {
+            const response = await fetch("/api/generate", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    industry,
+                    vibe,
+                    values,
+                }),
+            });
 
-			const data = await response.json();
-			suggestions = data.suggestions;
+            if (!response.ok) {
+                const errData = await response.json().catch(() => ({}));
+                throw new Error(errData.detail || "Failed to generate brands");
+            }
 
-			step = 4;
-			loading = false;
-			
-			// Automatically generate HQ logos for all suggestions
-			generateAllLogos();
-		} catch (error) {
-			console.error("Submission error details:", error);
-			alert(`Error: ${error.message}. Check console for details.`);
-			loading = false;
-		}
-	}
+            const data = await response.json();
+            suggestions = data.suggestions;
+            step = 4;
+            loading = false;
 
-	function downloadLogo(item) {
-		// Existing download logic
-		alert(`Downloading ${item.name}...`);
-	}
+            generateAllLogos();
+        } catch (error) {
+            console.error("Submission error details:", error);
+            alert(`Error: ${error.message}. Check console for details.`);
+            loading = false;
+        }
+    }
 
-	async function generateAllLogos() {
-		// Use a concurrency pool to generate logos efficiently
-		// Reduced concurrency to 2 to avoid rate limiting
-		const concurrency = 2;
-		const queue = suggestions.map((_, index) => index);
+    function downloadLogo(item) {
+        alert(`Downloading ${item.name}...`);
+    }
 
-		const worker = async () => {
-			while (queue.length > 0) {
-				const index = queue.shift();
-				if (index !== undefined) {
-					await generateHQLogo(index, suggestions[index].name);
-				}
-			}
-		};
+    async function generateAllLogos() {
+        const concurrency = 2;
+        const queue = suggestions.map((_, index) => index);
 
-		// Start workers
-		const workers = Array(concurrency).fill(null).map(() => worker());
-		await Promise.all(workers);
-	}
+        const worker = async () => {
+            while (queue.length > 0) {
+                const index = queue.shift();
 
-	async function generateHQLogo(index, name) {
-		// If already generated or generating, skip
-		if (suggestions[index].logoUrl || suggestions[index].generating) return;
+                if (index !== undefined) {
+                    await generateHQLogo(index, suggestions[index].name);
+                }
+            }
+        };
 
-		suggestions[index].generating = true;
-		suggestions = [...suggestions]; // Trigger reactivity
+        const workers = Array(concurrency)
+            .fill(null)
+            .map(() => worker());
 
-		try {
-			const res = await fetch(`/api/generate-logo?name=${encodeURIComponent(name)}&vibe=${encodeURIComponent(vibe)}`, {
-				method: 'POST'
-			});
-			const data = await res.json();
-			if (data.url) {
-				suggestions[index].logoUrl = data.url;
-			}
-		} catch (e) {
-			console.error(`Failed to generate logo for ${name}:`, e);
-		} finally {
-			suggestions[index].generating = false;
-			suggestions = [...suggestions]; // Trigger reactivity
-		}
-	}
+        await Promise.all(workers);
+    }
+
+    async function generateHQLogo(index, name) {
+        if (suggestions[index].logoUrl || suggestions[index].generating) return;
+
+        suggestions[index].generating = true;
+        suggestions = [...suggestions];
+
+        try {
+            const res = await fetch(
+                `/api/generate-logo?name=${encodeURIComponent(name)}&vibe=${encodeURIComponent(vibe)}`,
+                {
+                    method: "POST",
+                }
+            );
+
+            const data = await res.json();
+
+            if (data.url) {
+                suggestions[index].logoUrl = data.url;
+            }
+        } catch (e) {
+            console.error(`Failed to generate logo for ${name}:`, e);
+        } finally {
+            suggestions[index].generating = false;
+            suggestions = [...suggestions];
+        }
+    }
 </script>
 
 <svelte:head>
-	<title>BrandPixy | AI Brand Identity Generator</title>
-	<meta
-		name="description"
-		content="Generate professional brand identities and logos instantly with AI."
-	/>
+    <title>Brand Identity Generator</title>
+
+    <meta
+        name="description"
+        content="Create a visual direction for your brand."
+    />
 </svelte:head>
 
 {#if !showApp}
-	<div class="min-h-screen flex flex-col">
-		<!-- Minimal Navigation -->
-		<nav class="border-b border-surface-200 bg-white sticky top-0 z-50">
-			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-				<div class="flex justify-between items-center h-16">
-					<div class="flex items-center gap-2">
-						<svg class="w-8 h-8 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-						</svg>
-						<span class="text-lg font-bold text-surface-900">BrandPixy</span>
-					</div>
-					<button
-						class="px-6 py-2 bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors font-medium"
-						onclick={() => (showApp = true)}
-					>
-						Launch Builder
-					</button>
-				</div>
-			</div>
-		</nav>
 
-		<!-- Hero Section -->
-		<main class="flex-grow">
-			<div class="pt-20 pb-32">
-				<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-					<h1 class="text-5xl md:text-6xl font-bold tracking-tight mb-6">
-						Create your brand identity instantly
-					</h1>
+    <!-- LANDING PAGE -->
+    <div
+        class="min-h-screen text-white"
+        style="background: linear-gradient(172deg, rgba(63, 94, 251, 1) 0%, rgba(237, 70, 252, 1) 100%);"
+    >
 
-					<p class="text-lg text-surface-600 max-w-2xl mx-auto mb-10">
-						Generate unique logos and brand concepts powered by AI. 
-						Get professional results in seconds.
-					</p>
+        <!-- Navigation -->
+        <header class="max-w-[1400px] mx-auto px-6 md:px-10 py-7">
 
-					<button
-						class="px-8 py-3 bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors font-medium text-lg"
-						onclick={() => (showApp = true)}
-					>
-						Start Creating
-					</button>
+            <div class="flex justify-between items-center">
 
-					<!-- Stats -->
-					<div class="grid grid-cols-3 gap-8 mt-24 border-t border-surface-200 pt-16">
-						<div>
-							<div class="text-3xl font-bold text-surface-900">10k+</div>
-							<div class="text-sm text-surface-500 mt-2">Brands Created</div>
-						</div>
-						<div>
-							<div class="text-3xl font-bold text-surface-900">&lt; 1min</div>
-							<div class="text-sm text-surface-500 mt-2">Generation Time</div>
-						</div>
-						<div>
-							<div class="text-3xl font-bold text-surface-900">100%</div>
-							<div class="text-sm text-surface-500 mt-2">AI Powered</div>
-						</div>
-					</div>
-				</div>
-			</div>
 
-			<!-- Features Section -->
-			<section class="py-20 bg-surface-50">
-				<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-					<h2 class="text-3xl font-bold mb-12">How it works</h2>
 
-					<div class="grid md:grid-cols-3 gap-8">
-						<div class="bg-white p-8 rounded-lg border border-surface-200">
-							<div class="text-4xl mb-4">🎯</div>
-							<h3 class="text-xl font-bold mb-2">Describe Your Brand</h3>
-							<p class="text-surface-600">Tell us about your industry, style, and values.</p>
-						</div>
+ 
 
-						<div class="bg-white p-8 rounded-lg border border-surface-200">
-							<div class="text-4xl mb-4">⚡</div>
-							<h3 class="text-xl font-bold mb-2">Get Instant Concepts</h3>
-							<p class="text-surface-600">Receive multiple logo and design variations instantly.</p>
-						</div>
+            </div>
 
-						<div class="bg-white p-8 rounded-lg border border-surface-200">
-							<div class="text-4xl mb-4">📥</div>
-							<h3 class="text-xl font-bold mb-2">Download & Use</h3>
-							<p class="text-surface-600">Export high-quality files ready for your business.</p>
-						</div>
-					</div>
-				</div>
-			</section>
-		</main>
+        </header>
 
-		<footer class="bg-white border-t border-surface-200 py-8">
-			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-surface-500 text-sm">
-				&copy; {new Date().getFullYear()} BrandPixy. All rights reserved.
-			</div>
-		</footer>
-	</div>
+        <main>
+
+            <!-- HERO -->
+            <section
+                class="max-w-[1400px] mx-auto px-6 md:px-10 pt-24 md:pt-36 pb-32"
+            >
+
+                <div class="grid md:grid-cols-12 gap-10">
+
+                    <div class="md:col-span-8">
+
+                
+
+                        <h1
+                            class="text-[clamp(3.5rem,8vw,8rem)] leading-[0.86] tracking-[-0.07em] font-medium"
+                        >
+                            Give your<br />
+                            brand a point<br />
+                            of view.
+                        </h1>
+
+                    </div>
+
+                    <div
+                        class="md:col-span-3 md:col-start-10 md:pt-32"
+                    >
+
+                        <p
+                            class="text-sm md:text-base leading-7 text-white/70"
+                        >
+                            A focused way to explore names, visual directions
+                            and identities before you commit to one.
+                        </p>
+
+                        <button
+                            class="mt-8 text-sm border-b border-white/70 pb-1 hover:border-white transition-colors"
+                            onclick={() => (showApp = true)}
+                        >
+                            Try it now! →
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- PROCESS -->
+            <section
+                class="border-y border-white/20"
+            >
+
+                <div
+                    class="max-w-[1400px] mx-auto px-6 md:px-10"
+                >
+
+                    <div
+                        class="grid md:grid-cols-4 divide-x divide-white/20"
+                    >
+
+                        <div class="p-7 md:p-10">
+
+
+
+                            <div class="mt-12 text-sm text-white">
+                                Explore the result.
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- IDEA -->
+            <section
+                class="max-w-[1400px] mx-auto px-6 md:px-10 py-28"
+            >
+
+                <div class="grid md:grid-cols-12 gap-10">
+
+                    <div class="md:col-span-4">
+
+                        <div
+                            class="text-[10px] uppercase tracking-[0.22em] text-white/50"
+                        >
+                            The idea
+                        </div>
+
+                    </div>
+
+                    <div class="md:col-span-6">
+
+                        <p
+                            class="text-2xl md:text-4xl leading-[1.15] tracking-[-0.03em]"
+                        >
+                            Good identities usually begin with a simple
+                            question:
+                            <span class="text-white/50">
+                                what should this feel like?
+                            </span>
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+        <!-- FOOTER -->
+        <footer class="border-t border-white/20">
+
+            <div
+                class="max-w-[1400px] mx-auto px-6 md:px-10 py-7 flex justify-between"
+            >
+
+                <span
+                    class="text-[10px] uppercase tracking-[0.18em] text-white/50"
+                >
+                    Brand identity builder
+                </span>
+
+                <span
+                    class="text-[10px] uppercase tracking-[0.18em] text-white/50"
+                >
+                    {new Date().getFullYear()}
+                </span>
+
+            </div>
+
+        </footer>
+
+    </div>
+
 {:else}
-	<div class="min-h-screen flex flex-col bg-white">
-		<!-- App Header -->
-		<header class="border-b border-surface-200 bg-white sticky top-0 z-40">
-			<div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
-				<button
-					class="flex items-center gap-2 font-bold text-surface-900 hover:text-brand-600 transition-colors"
-					onclick={() => {
-						showApp = false;
-						step = 1;
-					}}
-				>
-					<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-					</svg>
-					<span>BrandPixy</span>
-				</button>
 
-				{#if step < 4}
-					<div class="flex items-center gap-3">
-						{#each [1, 2, 3] as idx}
-							<div class={`w-2 h-2 rounded-full ${step >= idx ? "bg-brand-600" : "bg-surface-200"}`}></div>
-						{/each}
-					</div>
-				{/if}
-			</div>
-		</header>
+    <!-- BUILDER -->
+    <div
+        class="min-h-screen text-white"
+        style="background: linear-gradient(172deg, rgba(63, 94, 251, 1) 0%, rgba(237, 70, 252, 1) 100%);"
+    >
 
-		<main class="flex-1 w-full max-w-2xl mx-auto px-4 py-12">
-			{#if step < 4}
-				<div class="bg-white border border-surface-200 rounded-lg p-8">
-					{#if step === 1}
-						<div class="space-y-8">
-							<div class="text-center space-y-2">
-								<h2 class="text-3xl font-bold">
-									What's your industry?
-								</h2>
-								<p class="text-surface-500">
-									Tell us what space you're operating in.
-								</p>
-							</div>
+        <!-- HEADER -->
+        <header class="border-b border-white/20">
 
-							<div class="relative">
-								<input
-									type="text"
-									bind:value={industry}
-									placeholder="e.g. AI Startup, Coffee Shop, Fashion Brand"
-									class="input text-lg py-4 pl-6"
-									onkeydown={(e) =>
-										e.key === "Enter" &&
-										industry &&
-										nextStep()}
-									autofocus
-								/>
-								<button
-									class="absolute right-2 top-2 bottom-2 btn btn-primary py-2 px-6"
-									disabled={!industry}
-									onclick={nextStep}
-								>
-									Next
-								</button>
-							</div>
+            <div
+                class="max-w-[1400px] mx-auto px-6 md:px-10 h-16 flex items-center justify-between"
+            >
 
-							<div class="flex flex-wrap gap-3 justify-center">
-								{#each ["Technology", "Food & Beverage", "Fashion", "Health", "Finance", "Education"] as hint}
-									<button
-										class="px-4 py-2 rounded-full bg-surface-100 text-surface-600 text-sm hover:bg-surface-200 hover:text-surface-900 transition-colors"
-										onclick={() => {
-											industry = hint;
-											nextStep();
-										}}
-									>
-										{hint}
-									</button>
-								{/each}
-							</div>
-						</div>
-					{/if}
+                <button
+                    class="text-[10px] uppercase tracking-[0.2em] text-white/70 hover:text-white transition-colors"
+                    onclick={() => {
+                        showApp = false;
+                        step = 1;
+                    }}
+                >
+                    ← Exit
+                </button>
 
-					{#if step === 2}
-						<div class="space-y-8">
-							<div class="text-center space-y-2">
-								<h2 class="text-3xl font-bold">
-									Choose your vibe
-								</h2>
-								<p class="text-surface-500">
-									How should your brand feel?
-								</p>
-							</div>
 
-							<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-								{#each vibes as v}
-									<button
-										class={`p-4 rounded-xl border text-left transition-all duration-200 hover:shadow-md ${vibe === v.id ? "border-brand-500 bg-brand-50 ring-1 ring-brand-500" : "border-surface-200 hover:border-brand-300"}`}
-										onclick={() => {
-											vibe = v.id;
-											nextStep();
-										}}
-									>
-										<div class="text-3xl mb-3">
-											{v.emoji}
-										</div>
-										<div class="font-bold text-surface-900">
-											{v.id}
-										</div>
-										<p
-											class="text-xs text-surface-500 mt-1"
-										>
-											{v.desc}
-										</p>
-									</button>
-								{/each}
-							</div>
 
-							<div class="flex justify-start">
-								<button
-									class="text-surface-500 hover:text-surface-900 font-medium"
-									onclick={prevStep}
-								>
-									← Back
-								</button>
-							</div>
-						</div>
-					{/if}
+      
 
-					{#if step === 3}
-						<div class="space-y-8">
-							<div class="text-center space-y-2">
-								<h2 class="text-3xl font-bold">Core Values</h2>
-								<p class="text-surface-500">
-									Any specific keywords or values to
-									emphasize? (Optional)
-								</p>
-							</div>
+            
 
-							<input
-								type="text"
-								bind:value={values}
-								placeholder="e.g. sustainability, speed, trust"
-								class="w-full px-4 py-3 border border-surface-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
-								onkeydown={(e) => e.key === "Enter" && submit()}
-								autofocus
-							/>
+            </div>
 
-							<div class="flex justify-between items-center pt-4">
-								<button
-									class="text-surface-500 hover:text-surface-900 font-medium"
-									onclick={prevStep}
-								>
-									← Back
-								</button>
-								<button
-									class="btn btn-primary px-8 py-4 text-lg shadow-glow"
-									onclick={submit}
-									disabled={loading}
-								>
-									{#if loading}
-										<span class="animate-spin mr-2">⟳</span>
-										Generating...
-									{:else}
-										Generate Brand Identity ✨
-									{/if}
-								</button>
-							</div>
-						</div>
-					{/if}
-				</div>
-			{:else}
-				<!-- Results View -->
-				<div class="space-y-8 animate-fade-in">
-					<div class="flex items-center justify-between">
-						<div>
-							<h2 class="text-3xl font-bold">
-								Your Brand Concepts
-							</h2>
-							<p class="text-surface-500 mt-1">
-								{industry} • {vibe}
-							</p>
-						</div>
-						<button
-							class="btn btn-secondary"
-							onclick={() => {
-								step = 1;
-								suggestions = [];
-							}}
-						>
-							Start Over
-						</button>
-					</div>
+        </header>
 
-					<div class="grid md:grid-cols-2 gap-6">
-						{#each suggestions as s, i}
-							<div class="bg-white border border-surface-200 rounded-lg overflow-hidden">
-								<div class="aspect-square bg-surface-50 flex items-center justify-center p-4">
-									{#if s.logoUrl}
-										<img
-											src={s.logoUrl}
-											alt={s.name}
-											class="w-full h-full object-contain drop-shadow-sm"
-										/>
-									{:else}
-										<div class="w-full h-full text-brand-600 p-2 flex items-center justify-center">
-											{@html s.svg}
-										</div>
-									{/if}
-									{#if s.generating}
-										<div class="absolute bottom-2 left-0 right-0 text-center z-10">
-											<span class="text-xs font-medium text-brand-600 animate-pulse bg-white/90 px-2 py-1 rounded-full shadow-sm">Generating HQ...</span>
-										</div>
-									{/if}
-								</div>
-								<div class="p-4">
-									<h3 class="font-bold mb-2 truncate">{s.name}</h3>
-									<p class="text-surface-500 text-sm mb-4 line-clamp-2">
-										{s.tagline}
-									</p>
-									<button
-										class="btn btn-secondary w-full text-sm py-2"
-										onclick={() => downloadLogo(s)}
-									>
-										Download
-									</button>
-								</div>
-							</div>
-						{/each}
+        <main class="max-w-[1400px] mx-auto px-6 md:px-10 py-16 md:py-24">
 
-						<!-- Premium Card -->
-						<div class="bg-white border border-surface-200 rounded-lg p-8 flex flex-col justify-center items-center text-center space-y-4">
-							<div class="text-3xl">💎</div>
-							<div>
-								<h3 class="font-bold">Unlock Full Brand Kit</h3>
-								<p class="text-surface-600 text-sm mt-1">Get templates & brand guidelines</p>
-							</div>
-							<button
-								class="btn btn-primary w-full"
-								onclick={() => (showUnlockModal = true)}
-							>
-								Upgrade for $29
-							</button>
-						</div>
-					</div>
-				</div>
-			{/if}
-		</main>
-	</div>
+            {#if step < 4}
+
+                <div class="grid md:grid-cols-12 gap-10">
+
+                    <!-- STEP INDEX -->
+                    <aside class="md:col-span-2">
+
+                        <div
+                            class="text-[11px] uppercase tracking-[0.2em] text-white/50"
+                        >
+                            0{step}
+                        </div>
+
+     
+
+                    </aside>
+
+                    <!-- FORM -->
+                    <section class="md:col-span-8 md:col-start-4">
+
+                        {#if step === 1}
+
+                            <div>
+
+                                <h2
+                                    class="text-5xl md:text-7xl tracking-[-0.06em] leading-[0.9] font-medium"
+                                >
+                                    What are<br />
+                                    you building?
+                                </h2>
+
+                                <p
+                                    class="mt-8 text-sm text-white/70 max-w-md leading-6"
+                                >
+                                    Tell us what kind of company, product,
+                                    service or project this identity belongs to.
+                                </p>
+
+                                <div
+                                    class="mt-14 border-b border-white/40 focus-within:border-white transition-colors"
+                                >
+
+                                    <input
+                                        type="text"
+                                        bind:value={industry}
+                                        placeholder="e.g. independent coffee company"
+                                        class="w-full bg-transparent py-4 text-xl md:text-2xl text-white placeholder:text-white/40 focus:outline-none"
+                                        onkeydown={(e) =>
+                                            e.key === "Enter" &&
+                                            industry &&
+                                            nextStep()}
+                                        autofocus
+                                    />
+
+                                </div>
+
+                                <div class="mt-8 flex flex-wrap gap-x-6 gap-y-3">
+
+                                    {#each ["Technology", "Food & Beverage", "Fashion", "Health", "Finance", "Education"] as hint}
+
+                                        <button
+                                            class="text-xs text-white/60 hover:text-white transition-colors"
+                                            onclick={() => {
+                                                industry = hint;
+                                                nextStep();
+                                            }}
+                                        >
+                                            {hint}
+                                        </button>
+
+                                    {/each}
+
+                                </div>
+
+                                <div class="mt-14 flex justify-end">
+
+                                    <button
+                                        class="text-xs uppercase tracking-[0.16em] disabled:text-white/30 hover:underline"
+                                        disabled={!industry}
+                                        onclick={nextStep}
+                                    >
+                                        Continue →
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        {:else if step === 2}
+
+                            <div>
+
+                                <h2
+                                    class="text-5xl md:text-7xl tracking-[-0.06em] leading-[0.9] font-medium"
+                                >
+                                    How should<br />
+                                    it feel?
+                                </h2>
+
+                                <p
+                                    class="mt-8 text-sm text-white/70 max-w-md leading-6"
+                                >
+                                    Pick the direction that feels closest.
+                                    There is no right answer.
+                                </p>
+
+                                <div
+                                    class="mt-14 grid grid-cols-2 md:grid-cols-4 border-t border-l border-white/20"
+                                >
+
+                                    {#each vibes as v}
+
+                                        <button
+                                            class={`min-h-[125px] p-5 text-left border-r border-b border-white/20 transition-all ${
+                                                vibe === v.id
+                                                    ? "bg-white text-[#3F5EFB]"
+                                                    : "bg-white/5 hover:bg-white/15"
+                                            }`}
+                                            onclick={() => {
+                                                vibe = v.id;
+                                                nextStep();
+                                            }}
+                                        >
+
+                                            <div class="text-sm font-medium">
+                                                {v.id}
+                                            </div>
+
+                                            <div
+                                                class={`text-[11px] leading-5 mt-3 ${
+                                                    vibe === v.id
+                                                        ? "text-[#3F5EFB]/70"
+                                                        : "text-white/60"
+                                                }`}
+                                            >
+                                                {v.desc}
+                                            </div>
+
+                                        </button>
+
+                                    {/each}
+
+                                </div>
+
+                                <div class="mt-10">
+
+                                    <button
+                                        class="text-xs uppercase tracking-[0.16em] text-white/60 hover:text-white"
+                                        onclick={prevStep}
+                                    >
+                                        ← Back
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        {:else if step === 3}
+
+                            <div>
+
+                                <h2
+                                    class="text-5xl md:text-7xl tracking-[-0.06em] leading-[0.9] font-medium"
+                                >
+                                    What should<br />
+                                    it stand for?
+                                </h2>
+
+                                <p
+                                    class="mt-8 text-sm text-white/70 max-w-md leading-6"
+                                >
+                                    Add a few words, principles or qualities
+                                    that should influence the identity.
+                                </p>
+
+                                <div
+                                    class="mt-14 border-b border-white/40 focus-within:border-white transition-colors"
+                                >
+
+                                    <input
+                                        type="text"
+                                        bind:value={values}
+                                        placeholder="e.g. trust, speed, simplicity"
+                                        class="w-full bg-transparent py-4 text-xl md:text-2xl text-white placeholder:text-white/40 focus:outline-none"
+                                        onkeydown={(e) =>
+                                            e.key === "Enter" && submit()}
+                                        autofocus
+                                    />
+
+                                </div>
+
+                                <div
+                                    class="mt-14 flex items-center justify-between"
+                                >
+
+                                    <button
+                                        class="text-xs uppercase tracking-[0.16em] text-white/60 hover:text-white"
+                                        onclick={prevStep}
+                                    >
+                                        ← Back
+                                    </button>
+
+                                    <button
+                                        class="text-xs uppercase tracking-[0.16em] disabled:text-white/30 hover:underline"
+                                        onclick={submit}
+                                        disabled={loading}
+                                    >
+                                        {#if loading}
+                                            Generating...
+                                        {:else}
+                                            Generate concepts →
+                                        {/if}
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        {/if}
+
+                    </section>
+
+                </div>
+
+            {:else}
+
+                <!-- RESULTS -->
+                <div>
+
+                    <div
+                        class="grid md:grid-cols-12 gap-10 mb-16"
+                    >
+
+                        <div class="md:col-span-7">
+
+                            <div
+                                class="text-[10px] uppercase tracking-[0.2em] text-white/50 mb-6"
+                            >
+                                Generated direction
+                            </div>
+
+                            <h1
+                                class="text-5xl md:text-7xl tracking-[-0.06em] leading-[0.9] font-medium"
+                            >
+                                {industry}
+                            </h1>
+
+                        </div>
+
+                        <div
+                            class="md:col-span-3 md:col-start-10 md:pt-10"
+                        >
+
+                            <div class="text-xs text-white/70 leading-6">
+
+                                <div
+                                    class="text-white/50 uppercase tracking-[0.16em] text-[10px] mb-2"
+                                >
+                                    Character
+                                </div>
+
+                                {vibe}
+
+                                {#if values}
+
+                                    <div class="mt-5">
+
+                                        <div
+                                            class="text-white/50 uppercase tracking-[0.16em] text-[10px] mb-2"
+                                        >
+                                            Values
+                                        </div>
+
+                                        {values}
+
+                                    </div>
+
+                                {/if}
+
+                            </div>
+
+                            <button
+                                class="mt-8 text-xs uppercase tracking-[0.16em] border-b border-white/60 pb-1 hover:border-white transition-colors"
+                                onclick={() => {
+                                    step = 1;
+                                    suggestions = [];
+                                }}
+                            >
+                                Start over
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <!-- RESULT GRID -->
+                    <div
+                        class="grid md:grid-cols-12 gap-px bg-white/20 border border-white/20"
+                    >
+
+                        {#each suggestions as s, i}
+
+                            <article
+                                class="md:col-span-6 bg-white/10 backdrop-blur-sm"
+                            >
+
+                                <div
+                                    class="relative aspect-square bg-white/95 flex items-center justify-center p-12"
+                                >
+
+                                    {#if s.logoUrl}
+
+                                        <img
+                                            src={s.logoUrl}
+                                            alt={s.name}
+                                            class="w-full h-full object-contain"
+                                        />
+
+                                    {:else}
+
+                                        <div
+                                            class="w-full h-full flex items-center justify-center text-brand-600"
+                                        >
+                                            {@html s.svg}
+                                        </div>
+
+                                    {/if}
+
+                                    {#if s.generating}
+
+                                        <div
+                                            class="absolute bottom-5 left-5 text-[10px] uppercase tracking-[0.15em] text-[#555]"
+                                        >
+                                            Generating high resolution
+                                        </div>
+
+                                    {/if}
+
+                                </div>
+
+                                <div class="p-6">
+
+                                    <div
+                                        class="flex justify-between items-start gap-6"
+                                    >
+
+                                        <div>
+
+                                            <h3 class="text-base font-medium">
+                                                {s.name}
+                                            </h3>
+
+                                            <p
+                                                class="text-xs text-white/60 mt-2 max-w-sm leading-5"
+                                            >
+                                                {s.tagline}
+                                            </p>
+
+                                        </div>
+
+                                        <span
+                                            class="text-[9px] uppercase tracking-[0.18em] text-white/40"
+                                        >
+                                            0{i + 1}
+                                        </span>
+
+                                    </div>
+
+                                    <button
+                                        class="mt-6 text-[10px] uppercase tracking-[0.16em] border-b border-white/40 pb-1 hover:border-white transition-colors"
+                                        onclick={() => downloadLogo(s)}
+                                    >
+                                        Download
+                                    </button>
+
+                                </div>
+
+                            </article>
+
+                        {/each}
+
+                        <!-- BRAND KIT -->
+                        <article
+                            class="md:col-span-6 min-h-[450px] p-8 md:p-10 flex flex-col justify-between bg-white/10 backdrop-blur-md"
+                        >
+
+                            <div>
+
+                                <div
+                                    class="text-[10px] uppercase tracking-[0.2em] text-white/50"
+                                >
+                                    Next step
+                                </div>
+
+                                <h2
+                                    class="text-3xl md:text-4xl tracking-[-0.04em] mt-10 max-w-sm font-medium"
+                                >
+                                    Turn one direction into a complete identity.
+                                </h2>
+
+                            </div>
+
+                            <div>
+
+                                <div
+                                    class="border-t border-white/20 pt-5 mb-7 text-xs text-white/60 leading-6"
+                                >
+                                    Brand guidelines<br />
+                                    Social templates<br />
+                                    Business cards<br />
+                                    Vector files<br />
+                                    Font licenses
+                                </div>
+
+                                <button
+                                    class="text-xs uppercase tracking-[0.16em] text-white border-b border-white/70 pb-1 hover:border-white transition-colors"
+                                    onclick={() => (showUnlockModal = true)}
+                                >
+                                    View brand kit — $29
+                                </button>
+
+                            </div>
+
+                        </article>
+
+                    </div>
+
+                </div>
+
+            {/if}
+
+        </main>
+
+    </div>
+
 {/if}
 
-<!-- Modal -->
+
+<!-- MODAL -->
 {#if showUnlockModal}
-	<div
-		class="fixed inset-0 z-[100] flex items-center justify-center p-4"
-		transition:fade={{ duration: 200 }}
-	>
-		<div class="absolute inset-0 bg-black/30"></div>
-		<div
-			class="relative bg-white border border-surface-200 rounded-lg w-full max-w-lg p-8 shadow-lg"
-		>
-			<button
-				class="absolute top-4 right-4 text-surface-400 hover:text-surface-900"
-				onclick={() => (showUnlockModal = false)}
-			>
-				<svg
-					class="w-6 h-6"
-					fill="none"
-					stroke="currentColor"
-					viewBox="0 0 24 24"
-					><path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M6 18L18 6M6 6l12 12"
-					/></svg
-				>
-			</button>
 
-			<div class="text-center mb-8">
-				<div
-					class="w-16 h-16 bg-brand-100 text-brand-600 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4"
-				>
-					🚀
-				</div>
-				<h2 class="text-2xl font-bold">Professional Brand Kit</h2>
-				<p class="text-surface-500 mt-2">
-					Everything you need to launch your brand today.
-				</p>
-			</div>
+    <div
+        class="fixed inset-0 z-[100] flex items-center justify-center p-6"
+        transition:fade={{ duration: 150 }}
+    >
 
-			<ul class="space-y-4 mb-8">
-				{#each ["Social Media Templates", "Brand Guidelines PDF", "Business Card Designs", "Vector Source Files", "Font Licenses"] as item}
-					<li class="flex items-center gap-3 text-surface-700">
-						<svg
-							class="w-5 h-5 text-green-500"
-							fill="none"
-							stroke="currentColor"
-							viewBox="0 0 24 24"
-							><path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M5 13l4 4L19 7"
-							/></svg
-						>
-						{item}
-					</li>
-				{/each}
-			</ul>
+        <button
+            class="absolute inset-0 bg-black/30 backdrop-blur-sm cursor-default"
+            aria-label="Close modal"
+            onclick={() => (showUnlockModal = false)}
+        ></button>
 
-			<button class="btn btn-primary w-full py-4 text-lg shadow-glow">
-				Get Instant Access - $29
-			</button>
-		</div>
-	</div>
+        <div
+            class="relative w-full max-w-lg p-8 md:p-10 bg-white text-[#171717] border border-white/20 shadow-2xl"
+        >
+
+            <button
+                class="absolute top-7 right-7 text-[#888] hover:text-black"
+                onclick={() => (showUnlockModal = false)}
+                aria-label="Close"
+            >
+                <svg
+                    class="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="1.5"
+                        d="M6 18L18 6M6 6l12 12"
+                    />
+                </svg>
+            </button>
+
+            <div
+                class="text-[10px] uppercase tracking-[0.2em] text-[#999]"
+            >
+                Brand kit
+            </div>
+
+            <h2
+                class="text-3xl tracking-[-0.04em] font-medium mt-6"
+            >
+                Everything after the concept.
+            </h2>
+
+            <p
+                class="text-sm text-[#777] leading-6 mt-4 max-w-md"
+            >
+                A complete set of assets for putting your chosen direction
+                into use.
+            </p>
+
+            <div class="mt-10 border-t border-[#ddd]">
+
+                {#each [
+                    "Social media templates",
+                    "Brand guidelines PDF",
+                    "Business card designs",
+                    "Vector source files",
+                    "Font licenses"
+                ] as item}
+
+                    <div
+                        class="py-4 border-b border-[#ddd] flex justify-between items-center"
+                    >
+
+                        <span class="text-sm">
+                            {item}
+                        </span>
+
+                        <span class="text-xs text-[#999]">
+                            Included
+                        </span>
+
+                    </div>
+
+                {/each}
+
+            </div>
+
+            <button
+                class="w-full mt-8 bg-[#171717] text-white h-12 text-xs uppercase tracking-[0.16em] hover:bg-[#333] transition-colors"
+            >
+                Get the brand kit — $29
+            </button>
+
+        </div>
+
+    </div>
+
 {/if}
